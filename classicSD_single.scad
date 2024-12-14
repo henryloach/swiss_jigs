@@ -9,9 +9,9 @@ jig_depth = 4;
 mold_area_width = jig_width;
 mold_area_length = jig_length;
 
-protrusion_length = 8.5;
+protrusion_length = 8.25;
 protrusion_width = 1.5;
-protrusion_offset = 16;
+protrusion_offset = 15.17;
 
 difference() {
     // Jig
