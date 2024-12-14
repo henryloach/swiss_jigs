@@ -11,7 +11,7 @@ mold_area_length = jig_length;
 
 protrusion_length = 8.25;
 protrusion_width = 1.5;
-protrusion_offset = 15.17;
+protrusion_offset = 16.25;
 
 difference() {
     // Jig
@@ -20,42 +20,42 @@ difference() {
         jig_length,
         jig_depth
     ]);
-    
+
     // Items
     translate([
         1/2 * (mold_area_width - item_width),
         1/2 * (mold_area_length - item_length),
         jig_depth - item_depth
     ]) {
-    cube([
-        item_width,
-        item_length,
-        item_depth
-    ]);
+        cube([
+            item_width,
+            item_length,
+            item_depth
+        ]);
     }
-    
+
+    // Pen Tabs
     translate([
         1/2 * (mold_area_width - item_width) - protrusion_width,
         1/2 * (mold_area_length - item_length) + protrusion_offset,
         jig_depth - item_depth
     ]) {
-    cube([
-        protrusion_width,
-        protrusion_length,
-        item_depth
-    ]);    
+        cube([
+            protrusion_width,
+            protrusion_length,
+            item_depth
+        ]);
     }
-    
+
     translate([
         1/2 * (mold_area_width - item_width) + item_width,
-        1/2 * (mold_area_length - item_length) + item_length - protrusion_offset - protrusion_length
-    ,
+        1/2 * (mold_area_length - item_length) + item_length - protrusion_offset - protrusion_length,
         jig_depth - item_depth
     ]) {
-    cube([
-        protrusion_width,
-        protrusion_length,
-        item_depth
-    ]);
+        cube([
+            protrusion_width,
+            protrusion_length,
+            item_depth
+        ]);
     }
 }
