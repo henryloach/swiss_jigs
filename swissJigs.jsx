@@ -21,6 +21,15 @@ const fontSizeFactors = {
     "Roboto-Medium" : 0.75
 }
 
+const fontInHouseNames = {
+    "Script" : "Monotype-Corsiva-Regular",
+    "Classic Script" : "DancingScript-Regular",
+    "Italic" : "GentiumBookPlus-Italic",
+    "Serif" : "Merriweather-Regular",
+    "Sans Serif" : "Roboto-Medium",
+    "Handwritten" : "Caveat-Regular",
+}
+
 const testTextList = [
     { text: "Merry Christmas", font: "GentiumBookPlus-Italic" },
     { text: "Happy Birthday", font: "Caveat-Regular" },
