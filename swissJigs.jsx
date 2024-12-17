@@ -1,11 +1,11 @@
 var doc; // Placeholder for the document object
 
-// Color Definitions
-const guidePink = new CMYKColor();
-guidePink.cyan = 0;
-guidePink.magenta = 100;
-guidePink.yellow = 0;
-guidePink.black = 0;
+// Define Color Objects
+var guidePink = new CMYKColor();
+guidePink.cyan = 0; guidePink.magenta = 100; guidePink.yellow = 0; guidePink.black = 0;
+
+var whiteGrey = new CMYKColor();
+whiteGrey.cyan = 0; whiteGrey.magenta = 0; whiteGrey.yellow = 0; whiteGrey.black = 80;
 
 const fontSizeFactors = {
     "GentiumBookPlus-Italic": 1.0,
@@ -57,7 +57,7 @@ const classicSD = {
     jigOffsetX: 0.0,
     jigOffsetY: 0.0,
     maxTextWidth: mmToPts(24),
-    baseTextHeight: mmToPts(6)
+    baseTextHeight: mmToPts(8)
 };
 
 const nailClip = {
@@ -74,7 +74,7 @@ const nailClip = {
     jigOffsetX: 0.0,
     jigOffsetY: 0.0,
     maxTextWidth: mmToPts(31),
-    baseTextHeight: mmToPts(6.5)
+    baseTextHeight: mmToPts(8)
 };
 
 // Utility functions
@@ -235,8 +235,7 @@ for (j = jigRows - 1; j >= 0; j--) {
 
             textFrame.contents = testTextList[textIndex].text
             textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(testTextList[textIndex].font)
-
-
+            textFrame.textRange.characterAttributes.fillColor = whiteGrey;
 
             var aspectRatio = textFrame.width / textFrame.height
 
