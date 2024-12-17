@@ -1,18 +1,40 @@
 var doc = app.activeDocument
 
-guidePink = new CMYKColor()
+const guidePink = new CMYKColor()
 guidePink.cyan = 0
 guidePink.magenta = 100
 guidePink.yellow = 0
 guidePink.black = 0 
 
+const whiteGrey = new CMYKColor()
+whiteGrey.cyan = 0
+whiteGrey.magenta = 0
+whiteGrey.yellow = 0
+whiteGrey.black = 80 
+
+const fontSizeFactors = {
+    "GentiumBookPlus-Italic" : 1.0,
+    "Caveat-Regular" : 1.125,
+    "DancingScript-Regular" : 1.0625,
+    "Merriweather-Regular" : 0.8125,
+    "Monotype-Corsiva-Regular" : 1.0,
+    "Roboto-Medium" : 0.75
+}
+
 const testTextList = [
-    { text: "Merry Christmas", font: "TimesNewRomanPSMT" },
-    { text: "Happy Birthday", font: "ArialMT" },
-    { text: "Test", font: "MyriadPro-Regular" },
-    { text: "ABC", font: "TimesNewRomanPSMT" },
-    { text: "Really Long Message Text", font: "MyriadPro-Regular" },
-    { text: "Merry Christmas", font: "TimesNewRomanPSMT" }
+    { text: "Merry Christmas", font: "GentiumBookPlus-Italic" },
+    { text: "Happy Birthday", font: "Caveat-Regular" },
+    { text: "Test", font: "DancingScript-Regular" },
+    { text: "ABC", font: "Merriweather-Regular" },
+    { text: "Really Long Message Text", font: "GentiumBookPlus-Italic" },
+    { text: "Merry Christmas", font: "Monotype-Corsiva-Regular" },
+    { text: "Merry Christmas", font: "Roboto-Medium" },
+    { text: "Happy Birthday", font: "Caveat-Regular" },
+    { text: "Test", font: "DancingScript-Regular" },
+    { text: "ABC", font: "Monotype-Corsiva-Regular" },
+    { text: "Really Long Message Text", font: "Monotype-Corsiva-Regular" },
+    { text: "Merry Christmas", font: "Caveat-Regular" },
+    { text: "ABC", font: "Roboto-Medium" }
 ]
 
 const huntsman = {
@@ -28,7 +50,8 @@ const huntsman = {
     jigColumns : 2,
     jigOffsetX : mmToPts(4.0),
     jigOffsetY : 0.0,
-    maxTextWidth : mmToPts(45)
+    maxTextWidth : mmToPts(46),
+    baseTextHeight : mmToPts(8)
 }
 
 const classicSD = {
@@ -44,7 +67,8 @@ const classicSD = {
     jigColumns : 3,
     jigOffsetX : 0.0,
     jigOffsetY : 0.0,
-    maxTextWidth : mmToPts(40)
+    maxTextWidth : mmToPts(24),
+    baseTextHeight : mmToPts(6)
 }
 
 const nailClip = {
@@ -52,15 +76,16 @@ const nailClip = {
     itemWidth : mmToPts(16.15),
     itemRadius : mmToPts(8),
     crestSizeX : mmToPts(9),
-    crestOffsetX : mmToPts(15.54),
-    insertX : mmToPts(61.84),
+    crestOffsetX : mmToPts(14.9),
+    insertX : mmToPts(61.6),
     jigLength : mmToPts(148.25),
     jigWidth : mmToPts(148.25),
     jigRows : 7,
     jigColumns : 2,
     jigOffsetX : 0.0,
     jigOffsetY : 0.0,
-    maxTextWidth : mmToPts(30)
+    maxTextWidth : mmToPts(31),
+    baseTextHeight : mmToPts(6.5)
 }
 
 function mmToPts(mm) {
@@ -74,7 +99,7 @@ function ptsToMm(pts) {
 const bedOffsetX = mmToPts(0.5)
 const bedOffsetY = mmToPts(2.25)
 
-const activeItem = nailClip
+const activeItem = huntsman
 
 // Item details
 
@@ -91,6 +116,7 @@ const jigColumns = activeItem.jigColumns
 const jigOffsetX = activeItem.jigOffsetX
 const jigOffsetY = activeItem.jigOffsetY
 const maxTextWidth = activeItem.maxTextWidth
+const baseTextHeight = activeItem.baseTextHeight
 
 // Derived values
 
@@ -107,25 +133,44 @@ const startY = (spacingY - itemWidth) / 2 + bedOffsetY + jigOffsetY
 
 var textIndex = 0
 
-for (i = 0; i < jigColumns; i++) {
-    for (j = 0; j < jigRows; j++) {
+for (j = jigRows - 1; j >= 0; j--) {
+    for (i = jigColumns - 1 ; i >= 0; i--) {
 
         // Outline
 
         var mold = doc.pathItems.roundedRectangle(-startY - j * spacingY, startX + i * spacingX, itemLength, itemWidth, itemRadius, itemRadius)
-        var crest = doc.pathItems.rectangle(-startY - j * spacingY - crestOffsetY, startX + i * spacingX + crestOffsetX, crestSizeX, crestSizeY)
-
-        
-        
         mold.filled = false
         mold.stroked = true
         mold.strokeWidth = 0.75
         mold.strokeColor = guidePink
         
+        // Crest
+
+        var crest = doc.pathItems.rectangle(-startY - j * spacingY - crestOffsetY, startX + i * spacingX + crestOffsetX, crestSizeX, crestSizeY)
         crest.filled = false
         crest.stroked = true
         crest.strokeWidth = 0.75
         crest.strokeColor = guidePink
+
+        // Cross
+
+        var crossTop = [startX + i * spacingX + crestOffsetX + crestSizeX / 2, -startY - j * spacingY - itemWidth / 2 + mmToPts(2.5) ]
+        var crossBottom = [startX + i * spacingX + crestOffsetX + crestSizeX / 2, -startY - j * spacingY - itemWidth / 2 - mmToPts(2.5) ]
+        
+        var vertical = doc.pathItems.add()
+        vertical.stroked = true
+        vertical.filled = false
+        vertical.setEntirePath([crossTop, crossBottom]) 
+        vertical.strokeColor = guidePink
+
+        var crossLeft = [startX + i * spacingX + crestOffsetX + crestSizeX / 2 - mmToPts(2.5), -startY - j * spacingY - itemWidth / 2 ]
+        var crossRight = [startX + i * spacingX + crestOffsetX + crestSizeX / 2 + mmToPts(2.5), -startY - j * spacingY - itemWidth / 2 ]
+
+        var horizontal = doc.pathItems.add()
+        horizontal.stroked = true
+        horizontal.filled = false
+        horizontal.setEntirePath([crossLeft, crossRight]) 
+        horizontal.strokeColor = guidePink
 
         // Text
 
@@ -139,10 +184,14 @@ for (i = 0; i < jigColumns; i++) {
             textFrame.contents = testTextList[textIndex].text
             textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(testTextList[textIndex].font)
 
+
+
             var aspectRatio = textFrame.width / textFrame.height
 
-            if (textFrame.width > maxTextWidth ) textFrame.width = mmToPts(22)
+            textFrame.height =  baseTextHeight * fontSizeFactors[testTextList[textIndex].font]
+            textFrame.width = textFrame.height * aspectRatio 
 
+            if (textFrame.width > maxTextWidth ) textFrame.width = maxTextWidth
             textFrame.height = textFrame.width / aspectRatio
                 
             textFrame.position =  [textPosX, textPosY]
