@@ -1,11 +1,7 @@
 var doc; // Placeholder for the document object
 
 // Define Color Objects
-var guidePink = new CMYKColor();
-guidePink.cyan = 0; guidePink.magenta = 100; guidePink.yellow = 0; guidePink.black = 0;
 
-var whiteGrey = new CMYKColor();
-whiteGrey.cyan = 0; whiteGrey.magenta = 0; whiteGrey.yellow = 0; whiteGrey.black = 80;
 
 const fontSizeFactors = {
     "GentiumBookPlus-Italic": 1.0,
@@ -138,9 +134,13 @@ win.show();
 
 // Create a new document
 const docWidth = mmToPts(210);
-const docHeight = mmToPts(160);
-doc = app.documents.add(null, docWidth, docHeight); // 210 mm x 160 mm canvas
+const docHeight = mmToPts(148);
+doc = app.documents.add(null, docWidth, docHeight); // 210 mm x 148 mm canvas
 doc.rulerUnits = RulerUnits.Millimeters;
+
+var guidePink = createSpotColor("RDG_Pink", 0, 100, 0, 0);
+
+var whiteGrey = createSpotColor("RDG_White", 25, 25, 25, 25);
 
 // Adjust the artboard to match the GUI-like bottom-left origin
 var artboard = doc.artboards[0];
@@ -194,7 +194,7 @@ for (j = jigRows - 1; j >= 0; j--) {
         mold.filled = false
         mold.stroked = true
         mold.strokeWidth = 0.75
-        mold.strokeColor = guidePink
+        mold.strokeColor = guidePink.color
 
         // Crest
 
@@ -202,7 +202,7 @@ for (j = jigRows - 1; j >= 0; j--) {
         crest.filled = false
         crest.stroked = true
         crest.strokeWidth = 0.75
-        crest.strokeColor = guidePink
+        crest.strokeColor = guidePink.color
 
         // Cross
 
@@ -213,7 +213,7 @@ for (j = jigRows - 1; j >= 0; j--) {
         vertical.stroked = true
         vertical.filled = false
         vertical.setEntirePath([crossTop, crossBottom])
-        vertical.strokeColor = guidePink
+        vertical.strokeColor = guidePink.color
 
         var crossLeft = [startX + i * spacingX + crestOffsetX + crestSizeX / 2 - mmToPts(2.5), -startY - j * spacingY - itemWidth / 2]
         var crossRight = [startX + i * spacingX + crestOffsetX + crestSizeX / 2 + mmToPts(2.5), -startY - j * spacingY - itemWidth / 2]
@@ -222,7 +222,7 @@ for (j = jigRows - 1; j >= 0; j--) {
         horizontal.stroked = true
         horizontal.filled = false
         horizontal.setEntirePath([crossLeft, crossRight])
-        horizontal.strokeColor = guidePink
+        horizontal.strokeColor = guidePink.color
 
         // Text
 
@@ -235,7 +235,7 @@ for (j = jigRows - 1; j >= 0; j--) {
 
             textFrame.contents = testTextList[textIndex].text
             textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(testTextList[textIndex].font)
-            textFrame.textRange.characterAttributes.fillColor = whiteGrey;
+            textFrame.textRange.characterAttributes.fillColor = whiteGrey.color;
 
             var aspectRatio = textFrame.width / textFrame.height
 
@@ -260,4 +260,39 @@ for (j = jigRows - 1; j >= 0; j--) {
         }
 
     }
+}
+
+/// Function to create or retrieve a spot color by name
+function createSpotColor(spotName, c, m, y, k) {
+    var spot = null;
+
+    // Check if the spots collection exists, if not create one
+    if (!doc.spots) {
+        doc.spots = [];
+    }
+
+    // Check if the spot color already exists
+    for (var i = 0; i < doc.spots.length; i++) {
+        if (doc.spots[i].name === spotName) {
+            spot = doc.spots[i];
+            break;
+        }
+    }
+
+    // If the spot doesn't exist, create it
+    if (!spot) {
+        spot = doc.spots.add();
+        spot.name = spotName;
+
+        var spotColor = new CMYKColor();
+        spotColor.cyan = c;
+        spotColor.magenta = m;
+        spotColor.yellow = y;
+        spotColor.black = k;
+
+        spot.color = spotColor;
+        spot.colorType = ColorModel.SPOT;
+    }
+
+    return spot;
 }
