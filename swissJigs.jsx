@@ -1,14 +1,18 @@
+// data
+
 const fontSizeFactors = {
     "GentiumBookPlus-Italic": 1.0,
     "Caveat-Regular": 1.125,
     "DancingScript-Regular": 1.0625,
     "Merriweather-Regular": 0.8125,
     "MonotypeCorsiva": 1.0,
+    "Monotype-Corsiva-Regular" : 1.0,
     "Roboto-Medium": 0.75
 };
 
 const fontInHouseNames = {
-    "Script": "MonotypeCorsiva",
+    //"Script": "MonotypeCorsiva",
+    "Script": "Monotype-Corsiva-Regular",
     "Classic Script": "DancingScript-Regular",
     "Italic": "GentiumBookPlus-Italic",
     "Serif": "Merriweather-Regular",
