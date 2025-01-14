@@ -1,19 +1,14 @@
-var doc; // Placeholder for the document object
-
-// Define Color Objects
-
-
 const fontSizeFactors = {
     "GentiumBookPlus-Italic": 1.0,
     "Caveat-Regular": 1.125,
     "DancingScript-Regular": 1.0625,
     "Merriweather-Regular": 0.8125,
-    "Monotype-Corsiva-Regular": 1.0,
+    "MonotypeCorsiva": 1.0,
     "Roboto-Medium": 0.75
 };
 
 const fontInHouseNames = {
-    "Script": "Monotype-Corsiva-Regular",
+    "Script": "MonotypeCorsiva",
     "Classic Script": "DancingScript-Regular",
     "Italic": "GentiumBookPlus-Italic",
     "Serif": "Merriweather-Regular",
@@ -36,7 +31,9 @@ const huntsman = {
     jigOffsetX: mmToPts(4.0),
     jigOffsetY: 0.0,
     maxTextWidth: mmToPts(46),
-    baseTextHeight: mmToPts(8)
+    baseTextHeight: mmToPts(8),
+    correctionX: { c: 0.405591, x: 0.00515464, y: -0.00254237 },
+    correctionY: { c: 0.390101, x: 0.00103093, y: -0.00338983 },
 };
 
 const classicSD = {
@@ -53,7 +50,9 @@ const classicSD = {
     jigOffsetX: 0.0,
     jigOffsetY: 0.0,
     maxTextWidth: mmToPts(24),
-    baseTextHeight: mmToPts(8)
+    baseTextHeight: mmToPts(7),
+    correctionX: { c: 0.466468, x: -0.00524997, y: -0.00314782 },
+    correctionY: { c: -0.3, x: 0.0, y: 0.0 },
 };
 
 const nailClip = {
@@ -70,7 +69,9 @@ const nailClip = {
     jigOffsetX: 0.0,
     jigOffsetY: 0.0,
     maxTextWidth: mmToPts(31),
-    baseTextHeight: mmToPts(8)
+    baseTextHeight: mmToPts(6.5),
+    correctionX: { c: 0.0, x: 0.0, y: 0.0 },
+    correctionY: { c: 0.0, x: 0.0, y: 0.0 },
 };
 
 // Utility functions
@@ -230,8 +231,14 @@ for (j = jigRows - 1; j >= 0; j--) {
 
             var textFrame = doc.textFrames.add()
 
-            var textPosX = startX + i * spacingX + (crestOffsetX + crestSizeX + insertX) / 2
-            var textPosY = -startY - j * spacingY - itemWidth / 2
+            var textPosX = startX + i * spacingX + (crestOffsetX + crestSizeX + insertX) / 2;
+            var textPosY = -startY - j * spacingY - itemWidth / 2;
+            
+            var tempX = textPosX + selectedPreset.correctionX.c + textPosX * selectedPreset.correctionX.x + textPosY * selectedPreset.correctionX.y; 
+            var tempY = textPosY - selectedPreset.correctionY.c - textPosY * selectedPreset.correctionY.y - textPosX * selectedPreset.correctionY.x;
+            
+            textPosX = tempX;
+            textPosY = tempY;
 
             textFrame.contents = testTextList[textIndex].text
             textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(testTextList[textIndex].font)
