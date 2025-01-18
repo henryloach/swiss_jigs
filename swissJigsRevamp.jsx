@@ -28,8 +28,10 @@ const fontData = {
     }
 }
 
+const colorData = {}
+
 const knifeFormFactors = {
-    "91": {
+    "91 mm - Front": {
         "length": 91.0,
         "leftRadius": 9.0,
         "rightRadius": 10.0,
@@ -53,8 +55,10 @@ const knifeFormFactors = {
                 constant: -12.5,
             }
         },
+        "jigRows": 5,
+        "jigColumns": 2,
     },
-    "84": {
+    "84 mm - Front": {
         "length": 84.0,
         "leftRadius": 8.5,
         "rightRadius": 10.0,
@@ -78,8 +82,10 @@ const knifeFormFactors = {
                 constant: -12.2333,
             }
         },
+        "jigRows": 5,
+        "jigColumns": 2,
     },
-    "64": {
+    "64 mm - Front ": {
         "length": 64.15,
         "leftRadius": 8.075,
         "rightRadius": 8.075,
@@ -100,8 +106,10 @@ const knifeFormFactors = {
                 constant: -8.38,
             }
         },
+        "jigRows": 7,
+        "jigColumns": 2,
     },
-    "58": {
+    "58 mm - Front": {
         "length": 58.75,
         "leftRadius": 7.125,
         "rightRadius": 7.125,
@@ -123,41 +131,58 @@ const knifeFormFactors = {
                 constant: -8.54,
             }
         },
+        "jigRows": 7,
+        "jigColumns": 3,
     }
 }
 
 // Script 
 
-// testData
-// const textData = [
-//     ["Hello", "There", "How"],
-//     ["Are", "You", "Today"],
-//     ["Hello", "There", "How"],
-//     ["Are", "You", "Today"],
-//     ["Hello", "ThereThereThereThereThereThereThereThereThereThere", "How"],
-//     ["Are", "You", "Today"],
-//     ["I", "Am", "Well"],
-// ]
+const formFactorSelectionWindow = new Window("dialog", "Select Form Factor");
+for (var key in knifeFormFactors) {
+    formFactorSelectionWindow.add("button", undefined, key).
+        onClick = function () {
+            var initData = createInitialData(knifeFormFactors[key].jigRows, knifeFormFactors[key].jigColumns, false);
+            var textInputWindow = makeTextInputWindow(initData);
+            formFactorSelectionWindow.close();
+            textInputWindow.show();
+        }
+}
 
-// const textData = [
-//     ["Hello", "There"],
-//     ["Are", "You"],
-//     ["Hello", "There"],
-//     ["Are", "You"],
-//     ["Hello", "ThereThereThereThereThereThereThereThereThereThere"],
-//     ["Are", "You"],
-//     ["I", "Am"],
-// ]
+formFactorSelectionWindow.show();
 
-const textData = [
-    ["Hello", "There"],
-    ["Are", "You"],
-    ["Hello", "There"],
-    ["Are", "You"],
-    ["Hello", "ThereThereThereThereThereThereThereThereThereThere"],
-]
+function makeTextInputWindow(initData) {
 
-generateDocument(textData, knifeFormFactors[91]);
+    const textInputWindow = new Window("dialog", "Enter Handle Text");
+
+    var inputPanel = textInputWindow.add("panel", undefined, "Enter Data");
+
+    for (var i = 0; i < initData.length; i++) {
+        var rowGroup = inputPanel.add("group");
+        rowGroup.orientation = "row";
+        for (var j = 0; j < initData[i].length; j++) {
+            var knifeData = rowGroup.add("panel", undefined, "");
+            knifeData.orientation = "row";
+            var text = knifeData.add("edittext", [0, 0, 200, 20], "");
+            var font = knifeData.add("dropdownlist", undefined, keys(fontData))
+            font.selection = 0;
+            var color = knifeData.add("dropdownlist", undefined, ["White", "Grey", "Black"])
+        }
+    }
+    var nav = inputPanel.add("group");
+    var generateButton = nav.add("button", undefined, "Generate");
+    generateButton.onClick = function () {
+        generateDocument(createInitialData(4, 2, false), knifeFormFactors["91 mm - Front"])
+        textInputWindow.close();
+    }
+    var backButton = nav.add("button", undefined, "Back");
+    backButton.onClick = function () {
+        textInputWindow.close();
+        formFactorSelectionWindow.show();
+    }
+
+    return textInputWindow;
+}
 
 // Functions
 
@@ -187,11 +212,11 @@ function generateDocument(textData, formFactor) {
     for (i = 0; i < textData.length; i++) {
         for (j = 0; j < textData[i].length; j++) {
             var textFrame = document.textFrames.add();
-            textFrame.contents = textData[i][j];
+            textFrame.contents = textData[i][j].text;
             constrainTextWidth(textFrame);
             textFrame.position = getTextPosition(i, j);
             positionTextCenter(textFrame);
-            textFrame.textRange.characterAttributes.fillColor = primerSpot;
+            textFrame.textRange.characterAttributes.fillColor = whiteSpot;
         }
     }
 
@@ -237,65 +262,24 @@ function generateDocument(textData, formFactor) {
     }
 }
 
-// Function to draw the custom shape
-function drawCustomShape(length, x, y, radius1, radius2) {
-    // Convert dimensions to points
-    length = mmToPoints(length);
-    x = mmToPoints(x);
-    y = mmToPoints(y);
-    radius1 = mmToPoints(radius1);
-    radius2 = mmToPoints(radius2);
-
-    // Calculate the distance between the centers of the circles
-    var circleDistance = length - (radius1 + radius2);
-
-    if (circleDistance < 0) {
-        throw new Error("The length is too short to fit both circles and the connecting segments.");
+function createInitialData(num_rows, num_columns, hasPrimer) {
+    var data = []
+    for (var i = 0; i < num_rows; i++) {
+        var dataRow = [];
+        for (var j = 0; j < num_columns; j++) {
+            dataRow.push({ text: "test", font: "Script", color: "White", primer: hasPrimer });
+        }
+        data.push(dataRow);
     }
+    return data;
+}
 
-    // Center coordinates of the first and second circles
-    var circle1Center = { x: x + radius1, y: y };
-    var circle2Center = { x: x + radius1 + circleDistance, y: y };
-
-    // Create a group to hold the shapes (optional for organization)
-    var group = app.activeDocument.groupItems.add();
-
-    // Draw the first semicircle (left-facing)
-    var semicircle1 = group.pathItems.ellipse(
-        circle1Center.y + radius1,         // Top
-        circle1Center.x - radius1,         // Left
-        radius1 * 2,                       // Width
-        radius1 * 2,                       // Height
-        false,                             // Reversed (false = clockwise)
-        true                               // Pie (true = partial arc)
-    );
-    semicircle1.startAngle = 90;          // Start at the top-right
-    semicircle1.endAngle = -90;           // End at the top-left
-    semicircle1.stroked = true;
-    semicircle1.filled = false;
-
-    // Draw the second semicircle (right-facing)
-    var semicircle2 = group.pathItems.ellipse(
-        circle2Center.y + radius2,         // Top
-        circle2Center.x - radius2,         // Left
-        radius2 * 2,                       // Width
-        radius2 * 2,                       // Height
-        false,                             // Reversed (false = clockwise)
-        true                               // Pie (true = partial arc)
-    );
-    semicircle2.startAngle = -90;         // Start at the top-left
-    semicircle2.endAngle = 90;            // End at the top-right
-    semicircle2.stroked = true;
-    semicircle2.filled = false;
-
-    // Draw the connecting line between the semicircles
-    var line1 = group.pathItems.add();
-    line1.setEntirePath([
-        [circle1Center.x + radius1, circle1Center.y],
-        [circle2Center.x - radius2, circle2Center.y]
-    ]);
-    line1.stroked = true;
-    line1.filled = false;
+function keys(object) {
+    const result = [];
+    for (var key in object) {
+        result.push(key)
+    }
+    return result
 }
 
 // Units
