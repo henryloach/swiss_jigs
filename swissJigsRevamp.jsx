@@ -28,8 +28,6 @@ const fontData = {
     }
 }
 
-const colorData = {}
-
 const knifeFormFactors = {
     "91 mm - Front": {
         "length": 91.0,
@@ -138,53 +136,89 @@ const knifeFormFactors = {
 
 // Script 
 
-const formFactorSelectionWindow = new Window("dialog", "Select Form Factor");
-for (var key in knifeFormFactors) {
-    formFactorSelectionWindow.add("button", undefined, key).
-        onClick = function () {
-            var initData = createInitialData(knifeFormFactors[key].jigRows, knifeFormFactors[key].jigColumns, false);
-            var textInputWindow = makeTextInputWindow(initData);
-            formFactorSelectionWindow.close();
-            textInputWindow.show();
-        }
-}
+// var formFactorSelectionWindow = new Window("dialog", "Select Form Factor");
+// for (var key in knifeFormFactors) {
+//     (function (formFactorKey) {
+//         formFactorSelectionWindow.add("button", undefined, formFactorKey).onClick = function () {
+//             var formFactor = knifeFormFactors[formFactorKey];
+//             var initData = createInitialData(formFactor.jigRows, formFactor.jigColumns, false);
+//             var textInputWindow = makeTextInputWindow(initData, formFactor);
+//             formFactorSelectionWindow.close();
+//             textInputWindow.show();
+//         };
+//     })(key); // Use IIFE to capture the current key
+// }
+// formFactorSelectionWindow.show();
 
-formFactorSelectionWindow.show();
+// function makeTextInputWindow(initData) {
 
-function makeTextInputWindow(initData) {
+//     const textInputWindow = new Window("dialog", "Enter Handle Text");
 
-    const textInputWindow = new Window("dialog", "Enter Handle Text");
+//     var inputPanel = textInputWindow.add("panel", undefined, "Enter Data");
 
-    var inputPanel = textInputWindow.add("panel", undefined, "Enter Data");
+//     for (var i = 0; i < initData.length; i++) {
+//         var rowGroup = inputPanel.add("group");
+//         rowGroup.orientation = "row";
+//         for (var j = 0; j < initData[i].length; j++) {
+//             var knifeData = rowGroup.add("panel", undefined, "");
+//             knifeData.orientation = "row";
 
-    for (var i = 0; i < initData.length; i++) {
-        var rowGroup = inputPanel.add("group");
-        rowGroup.orientation = "row";
-        for (var j = 0; j < initData[i].length; j++) {
-            var knifeData = rowGroup.add("panel", undefined, "");
-            knifeData.orientation = "row";
-            var text = knifeData.add("edittext", [0, 0, 200, 20], "");
-            var font = knifeData.add("dropdownlist", undefined, keys(fontData))
-            font.selection = 0;
-            var color = knifeData.add("dropdownlist", undefined, ["White", "Grey", "Black"])
-        }
-    }
-    var nav = inputPanel.add("group");
-    var generateButton = nav.add("button", undefined, "Generate");
-    generateButton.onClick = function () {
-        generateDocument(createInitialData(4, 2, false), knifeFormFactors["91 mm - Front"])
-        textInputWindow.close();
-    }
-    var backButton = nav.add("button", undefined, "Back");
-    backButton.onClick = function () {
-        textInputWindow.close();
-        formFactorSelectionWindow.show();
-    }
+//             knifeData.add("statictext", undefined, "Text:");
+//             var text = knifeData.add("edittext", [0, 0, 200, 20], initData[i][j].text);
 
-    return textInputWindow;
-}
+//             knifeData.add("statictext", undefined, "Font:");
+//             var font = knifeData.add("dropdownlist", undefined, keys(fontData));
+//             font.selection = 0;
+
+//             knifeData.add("statictext", undefined, "Color:");
+//             var color = knifeData.add("dropdownlist", undefined, ["White", "Grey", "Black"]);
+//             color.selection = 0;
+
+//             knifeData.add("statictext", undefined, "Primer:");
+//             var primer = knifeData.add("checkbox", undefined);
+//         }
+
+//     }
+//     var nav = inputPanel.add("group");
+//     var generateButton = nav.add("button", undefined, "Generate");
+//     generateButton.onClick = function () {
+//         generateDocument(initData, knifeFormFactors["91 mm - Front"])
+//         textInputWindow.close();
+//     }
+//     var backButton = nav.add("button", undefined, "Back");
+//     backButton.onClick = function () {
+//         textInputWindow.close();
+//         formFactorSelectionWindow.show();
+//     }
+
+//     return textInputWindow;
+// }
 
 // Functions
+var testData = [
+    [
+        { text: "Helylo H1y23", font: "Script", color: "White", primer: true },
+        { text: "", font: "Script", color: "White", primer: false },
+    ],
+    [
+        { text: "Chyris H1y23", font: "Handwritten", color: "White", primer: false },
+        { text: "", font: "Script", color: "White", primer: false },
+    ],
+    [
+        { text: "Cyhris H1y23", font: "Classic Script", color: "White", primer: false },
+        { text: "", font: "Script", color: "White", primer: false },
+    ],
+    [
+        { text: "Chryis H1y23", font: "Sans Serif", color: "White", primer: false },
+        { text: "", font: "Script", color: "White", primer: false },
+    ],
+    [
+        { text: "Theyre H1y23", font: "Italic", color: "Black", primer: true },
+        { text: "How Are Yyou? H1y23", font: "Serif", color: "Grey", primer: true },
+    ],
+]
+
+generateDocument(testData, knifeFormFactors["91 mm - Front"])
 
 function generateDocument(textData, formFactor) {
     // Create a new DocumentPreset object
@@ -208,15 +242,40 @@ function generateDocument(textData, formFactor) {
     // Create necessary spot colors
     var whiteSpot = createSpotColor("RDG_WHITE", [25, 25, 25, 25]); // Light gray for white ink visualization (CMYK: 0% Cyan, 0% Magenta, 0% Yellow, 10% Black)
     var primerSpot = createSpotColor("RDG_PRIMER", [50, 0, 100, 10]); // Greenish primer ink (CMYK: 50% Cyan, 0% Magenta, 100% Yellow, 10% Black)
+    var guideSpot = createSpotColor("Guide", [70, 0, 0, 25]);
+    var grey = createCMYKColor(0, 0, 0, 60);
+    var black = createCMYKColor(0, 0, 0, 100);
+
+    const colorMap = {
+        "White": whiteSpot,
+        "Grey": grey,
+        "Black": black,
+    }
 
     for (i = 0; i < textData.length; i++) {
         for (j = 0; j < textData[i].length; j++) {
+            if (textData[i][j].text === "") continue;
             var textFrame = document.textFrames.add();
+
+            var fontName = textData[i][j].font;
+            var font = app.textFonts.getByName(fontData[fontName].fullName);
+            textFrame.textRange.characterAttributes.textFont = font;
+
             textFrame.contents = textData[i][j].text;
+            setTextToFontSize(textFrame, fontName);
             constrainTextWidth(textFrame);
             textFrame.position = getTextPosition(i, j);
             positionTextCenter(textFrame);
-            textFrame.textRange.characterAttributes.fillColor = whiteSpot;
+
+            textFrame.textRange.characterAttributes.fillColor = colorMap[textData[i][j].color];
+
+            if (textData[i][j].primer === true) {
+                var primerText = textFrame.duplicate();
+                primerText.textRange.characterAttributes.fillColor = primerSpot;
+                textFrame.zOrder(ZOrderMethod.BRINGTOFRONT);
+            }
+
+            horizontalGuide(getTextPosition(i, j), formFactor.length)
         }
     }
 
@@ -237,6 +296,12 @@ function generateDocument(textData, formFactor) {
         newSpotColor.spot = newSpot;
 
         return newSpotColor;
+    }
+
+    function setTextToFontSize(textFrame, fontName) {
+        const aspectRatio = textFrame.width / textFrame.height;
+        textFrame.height = mmToPoints(formFactor.fontSize) * fontData[fontName].sizeFactor;
+        textFrame.width = textFrame.height * aspectRatio;
     }
 
     function getTextPosition(i, j) {
@@ -260,6 +325,19 @@ function generateDocument(textData, formFactor) {
             textFrame.height = textFrame.width / aspectRatio;
         }
     }
+
+    function horizontalGuide(point, length) {
+        const x = point[0];
+        const y = point[1];
+        const startPoint = [x - mmToPoints(length) / 2, y];
+        const endPoint = [x + mmToPoints(length) / 2, y];
+        const line = document.pathItems.add();
+        line.setEntirePath([startPoint, endPoint]);
+
+        line.stroked = true;
+        line.strokeWidth = 0.5;
+        line.strokeColor = guideSpot;
+    }
 }
 
 function createInitialData(num_rows, num_columns, hasPrimer) {
@@ -267,7 +345,7 @@ function createInitialData(num_rows, num_columns, hasPrimer) {
     for (var i = 0; i < num_rows; i++) {
         var dataRow = [];
         for (var j = 0; j < num_columns; j++) {
-            dataRow.push({ text: "test", font: "Script", color: "White", primer: hasPrimer });
+            dataRow.push({ text: "Hello", font: "Script", color: "White", primer: hasPrimer });
         }
         data.push(dataRow);
     }
@@ -281,6 +359,18 @@ function keys(object) {
     }
     return result
 }
+
+function createCMYKColor(cyan, magenta, yellow, key) {
+    var newCMYKColor = new CMYKColor();
+    newCMYKColor.black = key;
+    newCMYKColor.cyan = cyan;
+    newCMYKColor.magenta = magenta;
+    newCMYKColor.yellow = yellow;
+
+    return newCMYKColor;
+}
+
+
 
 // Units
 function mmToPoints(mm) { return mm * 72 / 25.4; }
