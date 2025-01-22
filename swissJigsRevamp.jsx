@@ -5,26 +5,32 @@ const fontData = {
         // "fullName" : "MonotypeCorsiva", // work
         "fullName": "Monotype-Corsiva-Regular", // home
         "sizeFactor": 1,
+        "y-nudge": 0.4 / 8.0,
     },
     "Classic Script": {
         "fullName": "DancingScript-Regular",
         "sizeFactor": 1.0625,
+        "y-nudge": 0.2 / 8.0,
     },
     "Italic": {
         "fullName": "GentiumBookPlus-Italic",
         "sizeFactor": 1,
+        "y-nudge": 0.9 / 8.0,
     },
     "Serif": {
         "fullName": "Merriweather-Regular",
         "sizeFactor": 0.8125,
+        "y-nudge": 0.45 / 8.0,
     },
     "Sans Serif": {
         "fullName": "Roboto-Medium",
         "sizeFactor": 0.75,
+        "y-nudge": 0.4 / 8.0,
     },
     "Handwritten": {
         "fullName": "Caveat-Regular",
-        "sizeFactor": 1.125
+        "sizeFactor": 1.125,
+        "y-nudge": 0.3 / 8.0,
     }
 }
 
@@ -87,7 +93,7 @@ const knifeFormFactors = {
         "length": 64.15,
         "leftRadius": 8.075,
         "rightRadius": 8.075,
-        "fontSize": 6.5,
+        "fontSize": 7,
         "maxTextWidth": 31,
         "knives": [
             "Nail Clip",
@@ -111,7 +117,7 @@ const knifeFormFactors = {
         "length": 58.75,
         "leftRadius": 7.125,
         "rightRadius": 7.125,
-        "fontSize": 6.0,
+        "fontSize": 6.5,
         "maxTextWidth": 26,
         "knives": [
             "Classic SD",
@@ -163,28 +169,36 @@ function makeTextInputWindow(data, formFactor) {
                 var knifeData = rowGroup.add("panel", undefined, "");
                 knifeData.orientation = "row";
 
-                knifeData.add("statictext", undefined, "Text:");
-                var text = knifeData.add("edittext", [0, 0, 100, 20], data[i][j].text);
+                var textGroup = knifeData.add("group");
+                textGroup.orientation = "column";
+                textGroup.add("statictext", undefined, "Text:");
+                var text = textGroup.add("edittext", [0, 0, 150, 20], data[i][j].text);
                 text.onChange = function () {
                     data[i][j].text = text.text;
                 };
 
-                knifeData.add("statictext", undefined, "Font:");
-                var font = knifeData.add("dropdownlist", undefined, keys(fontData));
+                var fontGroup = knifeData.add("group");
+                fontGroup.orientation = "column";
+                fontGroup.add("statictext", undefined, "Font:");
+                var font = fontGroup.add("dropdownlist", undefined, keys(fontData));
                 font.selection = 0;
                 font.onChange = function () {
                     data[i][j].font = font.selection.text;
                 };
 
-                knifeData.add("statictext", undefined, "Color:");
-                var color = knifeData.add("dropdownlist", undefined, ["White", "Grey", "Black"]);
+                var colorGroup = knifeData.add("group");
+                colorGroup.orientation = "column";
+                colorGroup.add("statictext", undefined, "Color:");
+                var color = colorGroup.add("dropdownlist", undefined, ["White", "Grey", "Black"]);
                 color.selection = 0;
                 color.onChange = function () { // Fixed color handler
                     data[i][j].color = color.selection.text;
                 };
 
-                knifeData.add("statictext", undefined, "Primer:");
-                var primer = knifeData.add("checkbox", undefined);
+                var primerGroup = knifeData.add("group");
+                primerGroup.orientation = "column";
+                primerGroup.add("statictext", undefined, "Primer:");
+                var primer = primerGroup.add("checkbox", undefined);
                 primer.onClick = function () {
                     data[i][j].primer = primer.value;
                 };
@@ -248,6 +262,7 @@ function generateDocument(textData, formFactor) {
             constrainTextWidth(textFrame);
             textFrame.position = getTextPosition(i, j);
             positionTextCenter(textFrame);
+            yNudge(textFrame, fontName);
 
             textFrame.textRange.characterAttributes.fillColor = colorMap[textData[i][j].color];
 
@@ -319,6 +334,13 @@ function generateDocument(textData, formFactor) {
         line.stroked = true;
         line.strokeWidth = 0.5;
         line.strokeColor = guideSpot;
+
+        line.zOrder(ZOrderMethod.SENDTOBACK);
+    }
+
+    function yNudge(textFrame, fontName) {
+        const nudgeValue = textFrame.height * (fontData[fontName]["y-nudge"] || 0) ;
+        textFrame.translate(0, -nudgeValue);
     }
 }
 
@@ -327,7 +349,7 @@ function createInitialData(num_rows, num_columns, hasPrimer) {
     for (var i = 0; i < num_rows; i++) {
         var dataRow = [];
         for (var j = 0; j < num_columns; j++) {
-            dataRow.push({ text: "init", font: "Script", color: "White", primer: hasPrimer });
+            dataRow.push({ text: "", font: "Script", color: "White", primer: hasPrimer });
         }
         data.push(dataRow);
     }
