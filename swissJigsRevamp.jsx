@@ -198,40 +198,9 @@ function makeTextInputWindow(data, formFactor) {
         generateDocument(data, formFactor);
         textInputWindow.close();
     };
-    var backButton = nav.add("button", undefined, "Back");
-    backButton.onClick = function () {
-        alert("Back button clicked");
-        textInputWindow.hide();
-        alert("Returning to form factor selection");
-        formFactorSelectionWindow.show();
-    };
 
     return textInputWindow;
 }
-
-// Functions
-// var testData = [
-//     [
-//         { text: "Helylo H1y23", font: "Script", color: "White", primer: true },
-//         { text: "", font: "Script", color: "White", primer: false },
-//     ],
-//     [
-//         { text: "Chyris H1y23", font: "Handwritten", color: "White", primer: false },
-//         { text: "", font: "Script", color: "White", primer: false },
-//     ],
-//     [
-//         { text: "Cyhris H1y23", font: "Classic Script", color: "White", primer: false },
-//         { text: "", font: "Script", color: "White", primer: false },
-//     ],
-//     [
-//         { text: "Chryis H1y23", font: "Sans Serif", color: "White", primer: false },
-//         { text: "", font: "Script", color: "White", primer: false },
-//     ],
-//     [
-//         { text: "Theyre H1y23", font: "Italic", color: "Black", primer: true },
-//         { text: "How Are Yyou? H1y23", font: "Serif", color: "Grey", primer: true },
-//     ],
-// ]
 
 function generateDocument(textData, formFactor) {
     // Create a new DocumentPreset object
