@@ -134,91 +134,104 @@ const knifeFormFactors = {
     }
 }
 
-// Script 
+//Script 
 
-// var formFactorSelectionWindow = new Window("dialog", "Select Form Factor");
-// for (var key in knifeFormFactors) {
-//     (function (formFactorKey) {
-//         formFactorSelectionWindow.add("button", undefined, formFactorKey).onClick = function () {
-//             var formFactor = knifeFormFactors[formFactorKey];
-//             var initData = createInitialData(formFactor.jigRows, formFactor.jigColumns, false);
-//             var textInputWindow = makeTextInputWindow(initData, formFactor);
-//             formFactorSelectionWindow.close();
-//             textInputWindow.show();
-//         };
-//     })(key); // Use IIFE to capture the current key
-// }
-// formFactorSelectionWindow.show();
+var formFactorSelectionWindow = new Window("dialog", "Select Form Factor");
+for (var key in knifeFormFactors) {
+    (function (formFactorKey) {
+        formFactorSelectionWindow.add("button", undefined, formFactorKey).onClick = function () {
+            var formFactor = knifeFormFactors[formFactorKey];
+            var initData = createInitialData(formFactor.jigRows, formFactor.jigColumns, false);
+            var textInputWindow = makeTextInputWindow(initData, formFactor);
+            formFactorSelectionWindow.hide();
+            textInputWindow.show();
+        };
+    })(key); // Use IIFE to capture the current key
+}
+formFactorSelectionWindow.show();
 
-// function makeTextInputWindow(initData) {
+function makeTextInputWindow(data, formFactor) {
+    const textInputWindow = new Window("dialog", "Enter Handle Text");
 
-//     const textInputWindow = new Window("dialog", "Enter Handle Text");
+    var inputPanel = textInputWindow.add("panel", undefined, "Enter Data");
 
-//     var inputPanel = textInputWindow.add("panel", undefined, "Enter Data");
+    for (var i = 0; i < data.length; i++) {
+        var rowGroup = inputPanel.add("group");
+        rowGroup.orientation = "row";
+        for (var j = 0; j < data[i].length; j++) {
+            (function (i, j) { // Create a new scope for each iteration
+                var knifeData = rowGroup.add("panel", undefined, "");
+                knifeData.orientation = "row";
 
-//     for (var i = 0; i < initData.length; i++) {
-//         var rowGroup = inputPanel.add("group");
-//         rowGroup.orientation = "row";
-//         for (var j = 0; j < initData[i].length; j++) {
-//             var knifeData = rowGroup.add("panel", undefined, "");
-//             knifeData.orientation = "row";
+                knifeData.add("statictext", undefined, "Text:");
+                var text = knifeData.add("edittext", [0, 0, 100, 20], data[i][j].text);
+                text.onChange = function () {
+                    data[i][j].text = text.text;
+                };
 
-//             knifeData.add("statictext", undefined, "Text:");
-//             var text = knifeData.add("edittext", [0, 0, 200, 20], initData[i][j].text);
+                knifeData.add("statictext", undefined, "Font:");
+                var font = knifeData.add("dropdownlist", undefined, keys(fontData));
+                font.selection = 0;
+                font.onChange = function () {
+                    data[i][j].font = font.selection.text;
+                };
 
-//             knifeData.add("statictext", undefined, "Font:");
-//             var font = knifeData.add("dropdownlist", undefined, keys(fontData));
-//             font.selection = 0;
+                knifeData.add("statictext", undefined, "Color:");
+                var color = knifeData.add("dropdownlist", undefined, ["White", "Grey", "Black"]);
+                color.selection = 0;
+                color.onChange = function () { // Fixed color handler
+                    data[i][j].color = color.selection.text;
+                };
 
-//             knifeData.add("statictext", undefined, "Color:");
-//             var color = knifeData.add("dropdownlist", undefined, ["White", "Grey", "Black"]);
-//             color.selection = 0;
+                knifeData.add("statictext", undefined, "Primer:");
+                var primer = knifeData.add("checkbox", undefined);
+                primer.onClick = function () {
+                    data[i][j].primer = primer.value;
+                };
+            })(i, j); // Pass current i and j to the IIFE
+        }
+    }
 
-//             knifeData.add("statictext", undefined, "Primer:");
-//             var primer = knifeData.add("checkbox", undefined);
-//         }
+    var nav = inputPanel.add("group");
+    var generateButton = nav.add("button", undefined, "Generate");
+    generateButton.onClick = function () {
+        generateDocument(data, formFactor);
+        textInputWindow.close();
+    };
+    var backButton = nav.add("button", undefined, "Back");
+    backButton.onClick = function () {
+        alert("Back button clicked");
+        textInputWindow.hide();
+        alert("Returning to form factor selection");
+        formFactorSelectionWindow.show();
+    };
 
-//     }
-//     var nav = inputPanel.add("group");
-//     var generateButton = nav.add("button", undefined, "Generate");
-//     generateButton.onClick = function () {
-//         generateDocument(initData, knifeFormFactors["91 mm - Front"])
-//         textInputWindow.close();
-//     }
-//     var backButton = nav.add("button", undefined, "Back");
-//     backButton.onClick = function () {
-//         textInputWindow.close();
-//         formFactorSelectionWindow.show();
-//     }
-
-//     return textInputWindow;
-// }
+    return textInputWindow;
+}
 
 // Functions
-var testData = [
-    [
-        { text: "Helylo H1y23", font: "Script", color: "White", primer: true },
-        { text: "", font: "Script", color: "White", primer: false },
-    ],
-    [
-        { text: "Chyris H1y23", font: "Handwritten", color: "White", primer: false },
-        { text: "", font: "Script", color: "White", primer: false },
-    ],
-    [
-        { text: "Cyhris H1y23", font: "Classic Script", color: "White", primer: false },
-        { text: "", font: "Script", color: "White", primer: false },
-    ],
-    [
-        { text: "Chryis H1y23", font: "Sans Serif", color: "White", primer: false },
-        { text: "", font: "Script", color: "White", primer: false },
-    ],
-    [
-        { text: "Theyre H1y23", font: "Italic", color: "Black", primer: true },
-        { text: "How Are Yyou? H1y23", font: "Serif", color: "Grey", primer: true },
-    ],
-]
-
-generateDocument(testData, knifeFormFactors["91 mm - Front"])
+// var testData = [
+//     [
+//         { text: "Helylo H1y23", font: "Script", color: "White", primer: true },
+//         { text: "", font: "Script", color: "White", primer: false },
+//     ],
+//     [
+//         { text: "Chyris H1y23", font: "Handwritten", color: "White", primer: false },
+//         { text: "", font: "Script", color: "White", primer: false },
+//     ],
+//     [
+//         { text: "Cyhris H1y23", font: "Classic Script", color: "White", primer: false },
+//         { text: "", font: "Script", color: "White", primer: false },
+//     ],
+//     [
+//         { text: "Chryis H1y23", font: "Sans Serif", color: "White", primer: false },
+//         { text: "", font: "Script", color: "White", primer: false },
+//     ],
+//     [
+//         { text: "Theyre H1y23", font: "Italic", color: "Black", primer: true },
+//         { text: "How Are Yyou? H1y23", font: "Serif", color: "Grey", primer: true },
+//     ],
+// ]
 
 function generateDocument(textData, formFactor) {
     // Create a new DocumentPreset object
@@ -345,7 +358,7 @@ function createInitialData(num_rows, num_columns, hasPrimer) {
     for (var i = 0; i < num_rows; i++) {
         var dataRow = [];
         for (var j = 0; j < num_columns; j++) {
-            dataRow.push({ text: "Hello", font: "Script", color: "White", primer: hasPrimer });
+            dataRow.push({ text: "init", font: "Script", color: "White", primer: hasPrimer });
         }
         data.push(dataRow);
     }
@@ -369,8 +382,6 @@ function createCMYKColor(cyan, magenta, yellow, key) {
 
     return newCMYKColor;
 }
-
-
 
 // Units
 function mmToPoints(mm) { return mm * 72 / 25.4; }
