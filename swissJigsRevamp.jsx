@@ -61,6 +61,7 @@ const knifeFormFactors = {
         },
         "jigRows": 5,
         "jigColumns": 2,
+        "preset" : {text: "", font: "Script", color: "white", primer: false },
     },
     "84 mm - Front": {
         "length": 84.0,
@@ -88,6 +89,7 @@ const knifeFormFactors = {
         },
         "jigRows": 5,
         "jigColumns": 2,
+        "preset" : {text: "", font: "Script", color: "white", primer: false },
     },
     "64 mm - Front ": {
         "length": 64.15,
@@ -112,6 +114,7 @@ const knifeFormFactors = {
         },
         "jigRows": 7,
         "jigColumns": 2,
+        "preset" : {text: "", font: "Script", color: "white", primer: true },
     },
     "58 mm - Front": {
         "length": 58.75,
@@ -122,6 +125,7 @@ const knifeFormFactors = {
         "knives": [
             "Classic SD",
             "Escort",
+            "Mini Champ",
         ],
         "coefficients": {
             x: {
@@ -137,6 +141,7 @@ const knifeFormFactors = {
         },
         "jigRows": 7,
         "jigColumns": 3,
+        "preset" : {text: "", font: "Script", color: "white", primer: true },
     }
 }
 
@@ -147,17 +152,18 @@ for (var key in knifeFormFactors) {
     (function (formFactorKey) {
         formFactorSelectionWindow.add("button", undefined, formFactorKey).onClick = function () {
             var formFactor = knifeFormFactors[formFactorKey];
-            var initData = createInitialData(formFactor.jigRows, formFactor.jigColumns, false);
-            var textInputWindow = makeTextInputWindow(initData, formFactor);
+            var textInputWindow = makeTextInputWindow(formFactor);
             formFactorSelectionWindow.hide();
             textInputWindow.show();
         };
-    })(key); // Use IIFE to capture the current key
+    })(key); // EIFE
 }
 formFactorSelectionWindow.show();
 
-function makeTextInputWindow(data, formFactor) {
+function makeTextInputWindow(formFactor) {
     const textInputWindow = new Window("dialog", "Enter Handle Text");
+
+    var data = createInitialData(formFactor.jigRows, formFactor.jigColumns, formFactor.preset);
 
     var inputPanel = textInputWindow.add("panel", undefined, "Enter Data");
 
@@ -165,7 +171,7 @@ function makeTextInputWindow(data, formFactor) {
         var rowGroup = inputPanel.add("group");
         rowGroup.orientation = "row";
         for (var j = 0; j < data[i].length; j++) {
-            (function (i, j) { // Create a new scope for each iteration
+            (function (i, j) {
                 var knifeData = rowGroup.add("panel", undefined, "");
                 knifeData.orientation = "row";
 
@@ -181,7 +187,7 @@ function makeTextInputWindow(data, formFactor) {
                 fontGroup.orientation = "column";
                 fontGroup.add("statictext", undefined, "Font:");
                 var font = fontGroup.add("dropdownlist", undefined, keys(fontData));
-                font.selection = 0;
+                font.selection = data[i][j].font;
                 font.onChange = function () {
                     data[i][j].font = font.selection.text;
                 };
@@ -190,8 +196,8 @@ function makeTextInputWindow(data, formFactor) {
                 colorGroup.orientation = "column";
                 colorGroup.add("statictext", undefined, "Color:");
                 var color = colorGroup.add("dropdownlist", undefined, ["White", "Grey", "Black"]);
-                color.selection = 0;
-                color.onChange = function () { // Fixed color handler
+                color.selection = data[i][j].color;
+                color.onChange = function () { 
                     data[i][j].color = color.selection.text;
                 };
 
@@ -199,10 +205,12 @@ function makeTextInputWindow(data, formFactor) {
                 primerGroup.orientation = "column";
                 primerGroup.add("statictext", undefined, "Primer:");
                 var primer = primerGroup.add("checkbox", undefined);
+                primer.value = data[i][j].primer;
                 primer.onClick = function () {
                     data[i][j].primer = primer.value;
                 };
-            })(i, j); // Pass current i and j to the IIFE
+
+            })(i, j);
         }
     }
 
@@ -217,16 +225,17 @@ function makeTextInputWindow(data, formFactor) {
 }
 
 function generateDocument(textData, formFactor) {
-    // Create a new DocumentPreset object
+    
+    // Preset
     var preset = new DocumentPreset();
-    preset.units = RulerUnits.Millimeters; // For reference only; Illustrator still uses points internally
-    preset.width = mmToPoints(210); // Convert 210 mm to points
-    preset.height = mmToPoints(148); // Convert 148 mm to points
+    preset.units = RulerUnits.Millimeters; // Illustrator still uses points internally
+    preset.width = mmToPoints(210);
+    preset.height = mmToPoints(148);
 
-    // Create a new document with the specified preset
+    // Create
     var document = app.documents.addDocument("Print", preset);
 
-    // Adjust the artboard to match the GUI-like top-left origin
+    // Artboard
     var artboard = document.artboards[0];
     artboard.artboardRect = [0, 0, document.width, -document.height]; // Top-Left is (0, 0), Bottom-Right is (width, -height)
 
@@ -235,7 +244,7 @@ function generateDocument(textData, formFactor) {
     view.zoom = 1.3194352817; // Fit artboard in view (100% zoom)
     view.centerPoint = [document.width / 2, -document.height / 2]; // Center the view on the document
 
-    // Create necessary spot colors
+    // Colors
     var whiteSpot = createSpotColor("RDG_WHITE", [25, 25, 25, 25]); // Light gray for white ink visualization (CMYK: 0% Cyan, 0% Magenta, 0% Yellow, 10% Black)
     var primerSpot = createSpotColor("RDG_PRIMER", [50, 0, 100, 10]); // Greenish primer ink (CMYK: 50% Cyan, 0% Magenta, 100% Yellow, 10% Black)
     var guideSpot = createSpotColor("Guide", [70, 0, 0, 25]);
@@ -248,6 +257,7 @@ function generateDocument(textData, formFactor) {
         "Black": black,
     }
 
+    // Loop
     for (i = 0; i < textData.length; i++) {
         for (j = 0; j < textData[i].length; j++) {
             if (textData[i][j].text === "") continue;
@@ -276,13 +286,13 @@ function generateDocument(textData, formFactor) {
         }
     }
 
-    // Function to create a spot color
+    // Functions
+
     function createSpotColor(name, colorValues) {
         var newSpot = document.spots.add();
         newSpot.name = name;
         newSpot.colorType = ColorModel.SPOT;
 
-        // Assign color values (CMYK in this example)
         newSpot.color = new CMYKColor();
         newSpot.color.cyan = colorValues[0];
         newSpot.color.magenta = colorValues[1];
@@ -294,6 +304,7 @@ function generateDocument(textData, formFactor) {
 
         return newSpotColor;
     }
+
 
     function setTextToFontSize(textFrame, fontName) {
         const aspectRatio = textFrame.width / textFrame.height;
@@ -339,17 +350,17 @@ function generateDocument(textData, formFactor) {
     }
 
     function yNudge(textFrame, fontName) {
-        const nudgeValue = textFrame.height * (fontData[fontName]["y-nudge"] || 0) ;
+        const nudgeValue = textFrame.height * (fontData[fontName]["y-nudge"] || 0);
         textFrame.translate(0, -nudgeValue);
     }
 }
 
-function createInitialData(num_rows, num_columns, hasPrimer) {
+function createInitialData(num_rows, num_columns, preset) {
     var data = []
     for (var i = 0; i < num_rows; i++) {
         var dataRow = [];
         for (var j = 0; j < num_columns; j++) {
-            dataRow.push({ text: "", font: "Script", color: "White", primer: hasPrimer });
+            dataRow.push(preset);
         }
         data.push(dataRow);
     }
