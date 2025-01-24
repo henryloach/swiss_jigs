@@ -61,7 +61,7 @@ const knifeFormFactors = {
         },
         "jigRows": 5,
         "jigColumns": 2,
-        "preset" : {text: "", font: "Script", color: "white", primer: false },
+        "preset": { text: "", font: "Script", color: "white", primer: false },
     },
     "84 mm - Front": {
         "length": 84.0,
@@ -89,7 +89,7 @@ const knifeFormFactors = {
         },
         "jigRows": 5,
         "jigColumns": 2,
-        "preset" : {text: "", font: "Script", color: "white", primer: false },
+        "preset": { text: "", font: "Script", color: "white", primer: false },
     },
     "64 mm - Front ": {
         "length": 64.15,
@@ -114,7 +114,7 @@ const knifeFormFactors = {
         },
         "jigRows": 7,
         "jigColumns": 2,
-        "preset" : {text: "", font: "Script", color: "white", primer: true },
+        "preset": { text: "", font: "Script", color: "white", primer: true },
     },
     "58 mm - Front": {
         "length": 58.75,
@@ -141,7 +141,7 @@ const knifeFormFactors = {
         },
         "jigRows": 7,
         "jigColumns": 3,
-        "preset" : {text: "", font: "Script", color: "white", primer: true },
+        "preset": { text: "", font: "Script", color: "white", primer: true },
     }
 }
 
@@ -197,7 +197,7 @@ function makeTextInputWindow(formFactor) {
                 colorGroup.add("statictext", undefined, "Color:");
                 var color = colorGroup.add("dropdownlist", undefined, ["White", "Grey", "Black"]);
                 color.selection = data[i][j].color;
-                color.onChange = function () { 
+                color.onChange = function () {
                     data[i][j].color = color.selection.text;
                 };
 
@@ -225,7 +225,7 @@ function makeTextInputWindow(formFactor) {
 }
 
 function generateDocument(textData, formFactor) {
-    
+
     // Preset
     var preset = new DocumentPreset();
     preset.units = RulerUnits.Millimeters; // Illustrator still uses points internally
@@ -257,7 +257,7 @@ function generateDocument(textData, formFactor) {
         "Black": black,
     }
 
-    // Loop
+    // Text
     for (i = 0; i < textData.length; i++) {
         for (j = 0; j < textData[i].length; j++) {
             if (textData[i][j].text === "") continue;
