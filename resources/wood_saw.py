@@ -25,16 +25,21 @@ points = [
     (84, 0)
 ]
 
+points = list(map(lambda (a,b): (mmToPoints(a), mmToPoints(b))))
+
+def mmToPoints(mm):
+    return mm * mm * 72 / 25.4
+
 # Prepare points for the positive and mirrored sides
 positive_points = [(x, y / 2) for x, y in points]  # Halve the y-values
 mirrored_points = [(x, -y) for x, y in reversed(positive_points[1:-1])]  # Skip first and last points to avoid overlap
 full_path = positive_points + mirrored_points  # Combine paths
 
 # Create SVG
-dwg = svgwrite.Drawing('knife_profile.svg', profile='tiny', size=(200, 100))
+dwg = svgwrite.Drawing('wood_saw_profile.svg', profile='tiny', size=(200, 100))
 path_data = "M " + " L ".join(f"{x},{y}" for x, y in full_path) + " Z"  # Close the path with 'Z'
 dwg.add(dwg.path(d=path_data, stroke='black', fill='none'))
 
 # Save to file
 dwg.save()
-print("SVG saved as 'knife_profile.svg'")
+print("SVG saved as 'wood_saw_profile.svg'")

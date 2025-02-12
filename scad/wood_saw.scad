@@ -26,16 +26,16 @@ difference() {
         for (i = [0:4]) {
             // Knife cavity
         
-        translate([(j * jig_length)/2 - mold_length - 9, -25.45 + i * jig_width / 5 + 14  , jig_height - mold_depth]) {
-            linear_extrude(height = mold_depth) {
-                knife_shape();
+            translate([(j * jig_length)/2 - mold_length - 9, -25.45 + i * jig_width / 5 + 14  , jig_height - mold_depth]) {
+                linear_extrude(height = mold_depth) {
+                    knife_shape();
+                }
+            }
+            
+            // Corkscrew
+            translate([(j * jig_length)/2 - mold_length - 9 + 41.5 , i * jig_width / 5 + 20.5 / 2 - 8 + 2.5 + 14 , jig_height - mold_depth - 1]) {
+                cube([36, 8, 8]);
             }
         }
-        
-        // Corkscrew
-        translate([(j * jig_length)/2 - mold_length - 9 + 41.5 , i * jig_width / 5 + 20.5 / 2 - 8 + 2.5 + 14 , jig_height - mold_depth - 1]) {
-            cube([36, 8, 8]);
-        }
     }
-}
 }

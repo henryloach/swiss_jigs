@@ -61,7 +61,7 @@ const knifeFormFactors = {
         },
         "jigRows": 5,
         "jigColumns": 2,
-        "preset": { text: "", font: "Script", color: "white", primer: false },
+        "preset": { text: "", font: "Script", color: "White", primer: false },
     },
     "84 mm - Front": {
         "length": 84.0,
@@ -89,7 +89,7 @@ const knifeFormFactors = {
         },
         "jigRows": 5,
         "jigColumns": 2,
-        "preset": { text: "", font: "Script", color: "white", primer: false },
+        "preset": { text: "", font: "Script", color: "White", primer: false },
     },
     "64 mm - Front ": {
         "length": 64.15,
@@ -114,7 +114,7 @@ const knifeFormFactors = {
         },
         "jigRows": 7,
         "jigColumns": 2,
-        "preset": { text: "", font: "Script", color: "white", primer: true },
+        "preset": { text: "", font: "Script", color: "White", primer: true },
     },
     "58 mm - Front": {
         "length": 58.75,
@@ -141,8 +141,36 @@ const knifeFormFactors = {
         },
         "jigRows": 7,
         "jigColumns": 3,
-        "preset": { text: "", font: "Script", color: "white", primer: true },
-    }
+        "preset": { text: "", font: "Script", color: "White", primer: true },
+    },
+    "91 mm - Back": {
+        "length": 91.0,
+        "leftRadius": 9.0,
+        "rightRadius": 10.0,
+        "fontSize": 8.0,
+        "maxTextWidth": 44,
+        "knives": [
+            "Huntsman",
+            "Fieldmaster",
+            "Spartan",
+            "Climber",
+        ],
+        "coefficients": {
+            x: {
+                column: 97,
+                row: 0,
+                constant: -31.5,
+            },
+            y: {
+                column: 0,
+                row: 29.5,
+                constant: -12.5,
+            }
+        },
+        "jigRows": 5,
+        "jigColumns": 2,
+        "preset": { text: "", font: "Script", color: "White", primer: false },
+    },
 }
 
 //Script 
@@ -355,12 +383,27 @@ function generateDocument(textData, formFactor) {
     }
 }
 
+function deepClone(obj) {
+    var clone = {};
+    for (var key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            // If the property is an object itself, clone it recursively
+            if (typeof obj[key] === "object" && obj[key] !== null) {
+                clone[key] = deepClone(obj[key]);
+            } else {
+                clone[key] = obj[key];
+            }
+        }
+    }
+    return clone;
+}
+
 function createInitialData(num_rows, num_columns, preset) {
     var data = []
     for (var i = 0; i < num_rows; i++) {
         var dataRow = [];
         for (var j = 0; j < num_columns; j++) {
-            dataRow.push(preset);
+            dataRow.push(deepClone(preset));
         }
         data.push(dataRow);
     }

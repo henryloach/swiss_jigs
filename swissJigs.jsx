@@ -1,309 +1,379 @@
-// data
+// Data
 
-const fontSizeFactors = {
-    "GentiumBookPlus-Italic": 1.0,
-    "Caveat-Regular": 1.125,
-    "DancingScript-Regular": 1.0625,
-    "Merriweather-Regular": 0.8125,
-    "MonotypeCorsiva": 1.0,
-    "Monotype-Corsiva-Regular" : 1.0,
-    "Roboto-Medium": 0.75
-};
+const fontData = {
+    "Script": {
+        // "fullName" : "MonotypeCorsiva", // work
+        "fullName": "Monotype-Corsiva-Regular", // home
+        "sizeFactor": 1,
+        "y-nudge": 0.4 / 8.0,
+    },
+    "Classic Script": {
+        "fullName": "DancingScript-Regular",
+        "sizeFactor": 1.0625,
+        "y-nudge": 0.2 / 8.0,
+    },
+    "Italic": {
+        "fullName": "GentiumBookPlus-Italic",
+        "sizeFactor": 1,
+        "y-nudge": 0.9 / 8.0,
+    },
+    "Serif": {
+        "fullName": "Merriweather-Regular",
+        "sizeFactor": 0.8125,
+        "y-nudge": 0.45 / 8.0,
+    },
+    "Sans Serif": {
+        "fullName": "Roboto-Medium",
+        "sizeFactor": 0.75,
+        "y-nudge": 0.4 / 8.0,
+    },
+    "Handwritten": {
+        "fullName": "Caveat-Regular",
+        "sizeFactor": 1.125,
+        "y-nudge": 0.3 / 8.0,
+    }
+}
 
-const fontInHouseNames = {
-    //"Script": "MonotypeCorsiva",
-    "Script": "Monotype-Corsiva-Regular",
-    "Classic Script": "DancingScript-Regular",
-    "Italic": "GentiumBookPlus-Italic",
-    "Serif": "Merriweather-Regular",
-    "Sans Serif": "Roboto-Medium",
-    "Handwritten": "Caveat-Regular"
-};
+const knifeFormFactors = {
+    "91 mm - Front": {
+        "length": 91.0,
+        "leftRadius": 9.0,
+        "rightRadius": 10.0,
+        "fontSize": 8.0,
+        "maxTextWidth": 44,
+        "knives": [
+            "Huntsman",
+            "Fieldmaster",
+            "Spartan",
+            "Climber",
+        ],
+        "coefficients": {
+            x: {
+                column: 97,
+                row: 0,
+                constant: -31.5,
+            },
+            y: {
+                column: 0,
+                row: 29.5,
+                constant: -12.5,
+            }
+        },
+        "jigRows": 5,
+        "jigColumns": 2,
+    },
+    "84 mm - Front": {
+        "length": 84.0,
+        "leftRadius": 8.5,
+        "rightRadius": 10.0,
+        "fontSize": 8.0,
+        "maxTextWidth": 36,
+        "knives": [
+            "Bantam",
+            "Sportsman",
+            "Waiter",
+            "My First Victorinox",
+        ],
+        "coefficients": {
+            x: {
+                column: 100,
+                row: -0.13333,
+                constant: -38.2333,
+            },
+            y: {
+                column: 0.1,
+                row: 29.5667,
+                constant: -12.2333,
+            }
+        },
+        "jigRows": 5,
+        "jigColumns": 2,
+    },
+    "64 mm - Front ": {
+        "length": 64.15,
+        "leftRadius": 8.075,
+        "rightRadius": 8.075,
+        "fontSize": 7,
+        "maxTextWidth": 31,
+        "knives": [
+            "Nail Clip",
+        ],
+        "coefficients": {
+            x: {
+                column: 73.4,
+                row: -0.12,
+                constant: -26.06,
+            },
+            y: {
+                column: 0,
+                row: 21.14,
+                constant: -8.38,
+            }
+        },
+        "jigRows": 7,
+        "jigColumns": 2,
+    },
+    "58 mm - Front": {
+        "length": 58.75,
+        "leftRadius": 7.125,
+        "rightRadius": 7.125,
+        "fontSize": 6.5,
+        "maxTextWidth": 26,
+        "knives": [
+            "Classic SD",
+            "Escort",
+        ],
+        "coefficients": {
+            x: {
+                column: 66.3,
+                row: -0.08,
+                constant: -22.94,
+            },
+            y: {
+                column: 0.1,
+                row: 21.12,
+                constant: -8.54,
+            }
+        },
+        "jigRows": 7,
+        "jigColumns": 3,
+    }
+}
 
-// Preset Items
-const huntsman = {
-    itemLength: mmToPts(91),
-    itemWidth: mmToPts(20),
-    itemRadius: mmToPts(10),
-    crestSizeX: mmToPts(11),
-    crestOffsetX: mmToPts(19),
-    insertX: mmToPts(86),
-    jigLength: mmToPts(194),
-    jigWidth: mmToPts(147.5),
-    jigRows: 5,
-    jigColumns: 2,
-    jigOffsetX: mmToPts(4.0),
-    jigOffsetY: 0.0,
-    maxTextWidth: mmToPts(46),
-    baseTextHeight: mmToPts(8),
-    correctionX: { c: 0.405591, x: 0.00515464, y: -0.00254237 },
-    correctionY: { c: 0.390101, x: 0.00103093, y: -0.00338983 },
-};
+//Script 
 
-const classicSD = {
-    itemLength: mmToPts(58.75),
-    itemWidth: mmToPts(14.25),
-    itemRadius: mmToPts(7),
-    crestSizeX: mmToPts(9),
-    crestOffsetX: mmToPts(13.5),
-    insertX: mmToPts(54.7),
-    jigLength: mmToPts(200),
-    jigWidth: mmToPts(148.25),
-    jigRows: 7,
-    jigColumns: 3,
-    jigOffsetX: 0.0,
-    jigOffsetY: 0.0,
-    maxTextWidth: mmToPts(24),
-    baseTextHeight: mmToPts(7),
-    correctionX: { c: 0.466468, x: -0.00524997, y: -0.00314782 },
-    correctionY: { c: -0.3, x: 0.0, y: 0.0 },
-};
+var formFactorSelectionWindow = new Window("dialog", "Select Form Factor");
+for (var key in knifeFormFactors) {
+    (function (formFactorKey) {
+        formFactorSelectionWindow.add("button", undefined, formFactorKey).onClick = function () {
+            var formFactor = knifeFormFactors[formFactorKey];
+            var initData = createInitialData(formFactor.jigRows, formFactor.jigColumns, false);
+            var textInputWindow = makeTextInputWindow(initData, formFactor);
+            formFactorSelectionWindow.hide();
+            textInputWindow.show();
+        };
+    })(key); // Use IIFE to capture the current key
+}
+formFactorSelectionWindow.show();
 
-const nailClip = {
-    itemLength: mmToPts(65.15),
-    itemWidth: mmToPts(16.15),
-    itemRadius: mmToPts(8),
-    crestSizeX: mmToPts(9),
-    crestOffsetX: mmToPts(14.9),
-    insertX: mmToPts(61.6),
-    jigLength: mmToPts(148.25),
-    jigWidth: mmToPts(148.25),
-    jigRows: 7,
-    jigColumns: 2,
-    jigOffsetX: 0.0,
-    jigOffsetY: 0.0,
-    maxTextWidth: mmToPts(31),
-    baseTextHeight: mmToPts(6.5),
-    correctionX: { c: 0.0, x: 0.0, y: 0.0 },
-    correctionY: { c: 0.0, x: 0.0, y: 0.0 },
-};
+function makeTextInputWindow(data, formFactor) {
+    const textInputWindow = new Window("dialog", "Enter Handle Text");
 
-// Utility functions
+    var inputPanel = textInputWindow.add("panel", undefined, "Enter Data");
 
-function mmToPts(mm) { return mm * 72 / 25.4; }
-function ptsToMm(pts) { return pts * 25.4 / 72; }
+    for (var i = 0; i < data.length; i++) {
+        var rowGroup = inputPanel.add("group");
+        rowGroup.orientation = "row";
+        for (var j = 0; j < data[i].length; j++) {
+            (function (i, j) { // Create a new scope for each iteration
+                var knifeData = rowGroup.add("panel", undefined, "");
+                knifeData.orientation = "row";
 
-// Global Values
+                var textGroup = knifeData.add("group");
+                textGroup.orientation = "column";
+                textGroup.add("statictext", undefined, "Text:");
+                var text = textGroup.add("edittext", [0, 0, 150, 20], data[i][j].text);
+                text.onChange = function () {
+                    data[i][j].text = text.text;
+                };
 
-const bedOffsetX = mmToPts(0.5)
-const bedOffsetY = mmToPts(2.25)
+                var fontGroup = knifeData.add("group");
+                fontGroup.orientation = "column";
+                fontGroup.add("statictext", undefined, "Font:");
+                var font = fontGroup.add("dropdownlist", undefined, keys(fontData));
+                font.selection = 0;
+                font.onChange = function () {
+                    data[i][j].font = font.selection.text;
+                };
 
-// GUI Setup
-var presetItems = { "Huntsman": huntsman, "Classic SD": classicSD, "Nail Clip": nailClip };
-var selectedPreset;
+                var colorGroup = knifeData.add("group");
+                colorGroup.orientation = "column";
+                colorGroup.add("statictext", undefined, "Color:");
+                var color = colorGroup.add("dropdownlist", undefined, ["White", "Grey", "Black"]);
+                color.selection = 0;
+                color.onChange = function () { // Fixed color handler
+                    data[i][j].color = color.selection.text;
+                };
 
-var win = new Window("dialog", "Custom Illustrator Script");
-win.alignChildren = "fill";
+                var primerGroup = knifeData.add("group");
+                primerGroup.orientation = "column";
+                primerGroup.add("statictext", undefined, "Primer:");
+                var primer = primerGroup.add("checkbox", undefined);
+                primer.onClick = function () {
+                    data[i][j].primer = primer.value;
+                };
+            })(i, j); // Pass current i and j to the IIFE
+        }
+    }
 
-// ActiveItem Selection Dropdown
-var presetGroup = win.add("group");
-presetGroup.add("statictext", undefined, "Jig Type:");
-var presetDropdown = presetGroup.add("dropdownlist", undefined, ["Huntsman", "Classic SD", "Nail Clip"]);
-presetDropdown.selection = 0;
-
-// Dynamic Text and Font Input
-var inputPanel = win.add("panel", undefined, "Enter Text and Choose Font");
-inputPanel.alignChildren = "fill";
-var inputGroup = inputPanel.add("group");
-
-var textFields = [];
-var fontDropdowns = [];
-addInputField();
-
-function addInputField() {
-    var group = inputPanel.add("group");
-    var textField = group.add("edittext", [0, 0, 200, 20], "");
-    var fontDropdown = group.add("dropdownlist", undefined, ["Script", "Classic Script", "Italic", "Serif", "Sans Serif", "Handwritten"]);
-    fontDropdown.selection = 0;
-
-    textFields.push(textField);
-    fontDropdowns.push(fontDropdown);
-
-    textField.onChanging = function () {
-        if (textFields[textFields.length - 1].text !== "") addInputField();
+    var nav = inputPanel.add("group");
+    var generateButton = nav.add("button", undefined, "Generate");
+    generateButton.onClick = function () {
+        generateDocument(data, formFactor);
+        textInputWindow.close();
     };
 
-    win.layout.layout(true);
+    return textInputWindow;
 }
 
-// Confirm Button
-var buttonGroup = win.add("group");
-buttonGroup.alignment = "right";
-var okButton = buttonGroup.add("button", undefined, "OK", { name: "ok" });
-okButton.onClick = function () {
-    selectedPreset = presetItems[presetDropdown.selection.text];
-    win.close();
-};
+function generateDocument(textData, formFactor) {
+    // Create a new DocumentPreset object
+    var preset = new DocumentPreset();
+    preset.units = RulerUnits.Millimeters; // For reference only; Illustrator still uses points internally
+    preset.width = mmToPoints(210); // Convert 210 mm to points
+    preset.height = mmToPoints(148); // Convert 148 mm to points
 
-win.show();
+    // Create a new document with the specified preset
+    var document = app.documents.addDocument("Print", preset);
 
-// Create a new document
-const docWidth = mmToPts(210);
-const docHeight = mmToPts(148);
-doc = app.documents.add(null, docWidth, docHeight); // 210 mm x 148 mm canvas
-doc.rulerUnits = RulerUnits.Millimeters;
+    // Adjust the artboard to match the GUI-like top-left origin
+    var artboard = document.artboards[0];
+    artboard.artboardRect = [0, 0, document.width, -document.height]; // Top-Left is (0, 0), Bottom-Right is (width, -height)
 
-var guidePink = createSpotColor("RDG_Pink", 0, 100, 0, 0);
+    // View
+    var view = document.views[0];
+    view.zoom = 1.3194352817; // Fit artboard in view (100% zoom)
+    view.centerPoint = [document.width / 2, -document.height / 2]; // Center the view on the document
 
-var whiteGrey = createSpotColor("RDG_White", 25, 25, 25, 25);
+    // Create necessary spot colors
+    var whiteSpot = createSpotColor("RDG_WHITE", [25, 25, 25, 25]); // Light gray for white ink visualization (CMYK: 0% Cyan, 0% Magenta, 0% Yellow, 10% Black)
+    var primerSpot = createSpotColor("RDG_PRIMER", [50, 0, 100, 10]); // Greenish primer ink (CMYK: 50% Cyan, 0% Magenta, 100% Yellow, 10% Black)
+    var guideSpot = createSpotColor("Guide", [70, 0, 0, 25]);
+    var grey = createCMYKColor(0, 0, 0, 60);
+    var black = createCMYKColor(0, 0, 0, 100);
 
-// Adjust the artboard to match the GUI-like bottom-left origin
-var artboard = doc.artboards[0];
-artboard.artboardRect = [0, 0, docWidth, -docHeight]; // Top-Left is (0, 0), Bottom-Right is (width, -height)
-
-// Prepare dynamic text list
-var testTextList = [];
-for (var i = 0; i < textFields.length; i++) {
-    var text = textFields[i].text;
-    var fontKey = fontDropdowns[i].selection.text;
-    if (text !== "") {
-        testTextList.push({ text: text, font: fontInHouseNames[fontKey] });
-    }
-}
-
-const itemLength = selectedPreset.itemLength
-const itemWidth = selectedPreset.itemWidth
-const itemRadius = selectedPreset.itemRadius
-const crestSizeX = selectedPreset.crestSizeX
-const insertX = selectedPreset.insertX
-const crestOffsetX = selectedPreset.crestOffsetX
-const jigLength = selectedPreset.jigLength
-const jigWidth = selectedPreset.jigWidth
-const jigRows = selectedPreset.jigRows
-const jigColumns = selectedPreset.jigColumns
-const jigOffsetX = selectedPreset.jigOffsetX
-const jigOffsetY = selectedPreset.jigOffsetY
-const maxTextWidth = selectedPreset.maxTextWidth
-const baseTextHeight = selectedPreset.baseTextHeight
-
-const crestSizeY = crestSizeX * 7 / 9
-const crestOffsetY = (itemWidth - crestSizeY) / 2
-
-// Derived values
-
-const spacingX = jigLength / jigColumns
-const spacingY = jigWidth / jigRows
-
-const startX = (spacingX - itemLength) / 2 + bedOffsetX + jigOffsetX
-const startY = (spacingY - itemWidth) / 2 + bedOffsetY + jigOffsetY
-
-// Draw Elements
-var textIndex = 0
-
-for (j = jigRows - 1; j >= 0; j--) {
-    for (i = jigColumns - 1; i >= 0; i--) {
-
-        // Outline
-
-        var mold = doc.pathItems.roundedRectangle(-startY - j * spacingY, startX + i * spacingX, itemLength, itemWidth, itemRadius, itemRadius)
-        mold.filled = false
-        mold.stroked = true
-        mold.strokeWidth = 0.75
-        mold.strokeColor = guidePink.color
-
-        // Crest
-
-        var crest = doc.pathItems.rectangle(-startY - j * spacingY - crestOffsetY, startX + i * spacingX + crestOffsetX, crestSizeX, crestSizeY)
-        crest.filled = false
-        crest.stroked = true
-        crest.strokeWidth = 0.75
-        crest.strokeColor = guidePink.color
-
-        // Cross
-
-        var crossTop = [startX + i * spacingX + crestOffsetX + crestSizeX / 2, -startY - j * spacingY - itemWidth / 2 + mmToPts(2.5)]
-        var crossBottom = [startX + i * spacingX + crestOffsetX + crestSizeX / 2, -startY - j * spacingY - itemWidth / 2 - mmToPts(2.5)]
-
-        var vertical = doc.pathItems.add()
-        vertical.stroked = true
-        vertical.filled = false
-        vertical.setEntirePath([crossTop, crossBottom])
-        vertical.strokeColor = guidePink.color
-
-        var crossLeft = [startX + i * spacingX + crestOffsetX + crestSizeX / 2 - mmToPts(2.5), -startY - j * spacingY - itemWidth / 2]
-        var crossRight = [startX + i * spacingX + crestOffsetX + crestSizeX / 2 + mmToPts(2.5), -startY - j * spacingY - itemWidth / 2]
-
-        var horizontal = doc.pathItems.add()
-        horizontal.stroked = true
-        horizontal.filled = false
-        horizontal.setEntirePath([crossLeft, crossRight])
-        horizontal.strokeColor = guidePink.color
-
-        // Text
-
-        if (textIndex < testTextList.length) {
-
-            var textFrame = doc.textFrames.add()
-
-            var textPosX = startX + i * spacingX + (crestOffsetX + crestSizeX + insertX) / 2;
-            var textPosY = -startY - j * spacingY - itemWidth / 2;
-            
-            var tempX = textPosX + selectedPreset.correctionX.c + textPosX * selectedPreset.correctionX.x + textPosY * selectedPreset.correctionX.y; 
-            var tempY = textPosY - selectedPreset.correctionY.c - textPosY * selectedPreset.correctionY.y - textPosX * selectedPreset.correctionY.x;
-            
-            textPosX = tempX;
-            textPosY = tempY;
-
-            textFrame.contents = testTextList[textIndex].text
-            textFrame.textRange.characterAttributes.textFont = app.textFonts.getByName(testTextList[textIndex].font)
-            textFrame.textRange.characterAttributes.fillColor = whiteGrey.color;
-
-            var aspectRatio = textFrame.width / textFrame.height
-
-            textFrame.height = baseTextHeight * fontSizeFactors[testTextList[textIndex].font]
-            textFrame.width = textFrame.height * aspectRatio
-
-            if (textFrame.width > maxTextWidth) textFrame.width = maxTextWidth
-            textFrame.height = textFrame.width / aspectRatio
-
-            textFrame.position = [textPosX, textPosY]
-
-            textFrame.position = [
-                textFrame.position[0] - textFrame.width / 2,
-                textFrame.position[1] + textFrame.height / 2
-            ]
-
-            // alert(ptsToMm(textPosX) + ", " + ptsToMm(textPosY))
-
-            textFrame.position = [textFrame.position[0], textFrame.position[1] - textFrame.height * 0.29 / 4.602]
-
-            textIndex++
-        }
-
-    }
-}
-
-/// Function to create or retrieve a spot color by name
-function createSpotColor(spotName, c, m, y, k) {
-    var spot = null;
-
-    // Check if the spots collection exists, if not create one
-    if (!doc.spots) {
-        doc.spots = [];
+    const colorMap = {
+        "White": whiteSpot,
+        "Grey": grey,
+        "Black": black,
     }
 
-    // Check if the spot color already exists
-    for (var i = 0; i < doc.spots.length; i++) {
-        if (doc.spots[i].name === spotName) {
-            spot = doc.spots[i];
-            break;
+    for (i = 0; i < textData.length; i++) {
+        for (j = 0; j < textData[i].length; j++) {
+            if (textData[i][j].text === "") continue;
+            var textFrame = document.textFrames.add();
+
+            var fontName = textData[i][j].font;
+            var font = app.textFonts.getByName(fontData[fontName].fullName);
+            textFrame.textRange.characterAttributes.textFont = font;
+
+            textFrame.contents = textData[i][j].text;
+            setTextToFontSize(textFrame, fontName);
+            constrainTextWidth(textFrame);
+            textFrame.position = getTextPosition(i, j);
+            positionTextCenter(textFrame);
+            yNudge(textFrame, fontName);
+
+            textFrame.textRange.characterAttributes.fillColor = colorMap[textData[i][j].color];
+
+            if (textData[i][j].primer === true) {
+                var primerText = textFrame.duplicate();
+                primerText.textRange.characterAttributes.fillColor = primerSpot;
+                textFrame.zOrder(ZOrderMethod.BRINGTOFRONT);
+            }
+
+            horizontalGuide(getTextPosition(i, j), formFactor.length)
         }
     }
 
-    // If the spot doesn't exist, create it
-    if (!spot) {
-        spot = doc.spots.add();
-        spot.name = spotName;
+    // Function to create a spot color
+    function createSpotColor(name, colorValues) {
+        var newSpot = document.spots.add();
+        newSpot.name = name;
+        newSpot.colorType = ColorModel.SPOT;
 
-        var spotColor = new CMYKColor();
-        spotColor.cyan = c;
-        spotColor.magenta = m;
-        spotColor.yellow = y;
-        spotColor.black = k;
+        // Assign color values (CMYK in this example)
+        newSpot.color = new CMYKColor();
+        newSpot.color.cyan = colorValues[0];
+        newSpot.color.magenta = colorValues[1];
+        newSpot.color.yellow = colorValues[2];
+        newSpot.color.black = colorValues[3];
 
-        spot.color = spotColor;
-        spot.colorType = ColorModel.SPOT;
+        var newSpotColor = new SpotColor()
+        newSpotColor.spot = newSpot;
+
+        return newSpotColor;
     }
 
-    return spot;
+    function setTextToFontSize(textFrame, fontName) {
+        const aspectRatio = textFrame.width / textFrame.height;
+        textFrame.height = mmToPoints(formFactor.fontSize) * fontData[fontName].sizeFactor;
+        textFrame.width = textFrame.height * aspectRatio;
+    }
+
+    function getTextPosition(i, j) {
+        const x = formFactor.coefficients.x.row * (i + 1) + formFactor.coefficients.x.column * (j + 1) + formFactor.coefficients.x.constant
+        const y = formFactor.coefficients.y.row * (i + 1) + formFactor.coefficients.y.column * (j + 1) + formFactor.coefficients.y.constant
+        return [mmToPoints(x), -mmToPoints(y)]
+    }
+
+    function positionTextCenter(textFrame) {
+        textFrame.position = [
+            textFrame.position[0] - textFrame.width / 2,
+            textFrame.position[1] + textFrame.height / 2
+        ]
+    }
+
+    function constrainTextWidth(textFrame) {
+        const aspectRatio = textFrame.width / textFrame.height;
+
+        if (textFrame.width > mmToPoints(formFactor.maxTextWidth)) {
+            textFrame.width = mmToPoints(formFactor.maxTextWidth);
+            textFrame.height = textFrame.width / aspectRatio;
+        }
+    }
+
+    function horizontalGuide(point, length) {
+        const x = point[0];
+        const y = point[1];
+        const startPoint = [x - mmToPoints(length) / 2, y];
+        const endPoint = [x + mmToPoints(length) / 2, y];
+        const line = document.pathItems.add();
+        line.setEntirePath([startPoint, endPoint]);
+
+        line.stroked = true;
+        line.strokeWidth = 0.5;
+        line.strokeColor = guideSpot;
+
+        line.zOrder(ZOrderMethod.SENDTOBACK);
+    }
+
+    function yNudge(textFrame, fontName) {
+        const nudgeValue = textFrame.height * (fontData[fontName]["y-nudge"] || 0) ;
+        textFrame.translate(0, -nudgeValue);
+    }
 }
+
+function createInitialData(num_rows, num_columns, hasPrimer) {
+    var data = []
+    for (var i = 0; i < num_rows; i++) {
+        var dataRow = [];
+        for (var j = 0; j < num_columns; j++) {
+            dataRow.push({ text: "", font: "Script", color: "White", primer: hasPrimer });
+        }
+        data.push(dataRow);
+    }
+    return data;
+}
+
+function keys(object) {
+    const result = [];
+    for (var key in object) {
+        result.push(key)
+    }
+    return result
+}
+
+function createCMYKColor(cyan, magenta, yellow, key) {
+    var newCMYKColor = new CMYKColor();
+    newCMYKColor.black = key;
+    newCMYKColor.cyan = cyan;
+    newCMYKColor.magenta = magenta;
+    newCMYKColor.yellow = yellow;
+
+    return newCMYKColor;
+}
+
+// Units
+function mmToPoints(mm) { return mm * 72 / 25.4; }
+function pointsToMm(pts) { return pts * 25.4 / 72; }
