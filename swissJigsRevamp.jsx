@@ -36,6 +36,7 @@ const fontData = {
 
 const knifeFormFactors = {
     "91 mm - Front": {
+        "inverted": false,
         "length": 91.0,
         "leftRadius": 9.0,
         "rightRadius": 10.0,
@@ -64,6 +65,7 @@ const knifeFormFactors = {
         "preset": { text: "", font: "Script", color: "White", primer: false },
     },
     "84 mm - Front": {
+        "inverted": false,
         "length": 84.0,
         "leftRadius": 8.5,
         "rightRadius": 10.0,
@@ -92,6 +94,7 @@ const knifeFormFactors = {
         "preset": { text: "", font: "Script", color: "White", primer: false },
     },
     "64 mm - Front ": {
+        "inverted": false,
         "length": 64.15,
         "leftRadius": 8.075,
         "rightRadius": 8.075,
@@ -117,6 +120,7 @@ const knifeFormFactors = {
         "preset": { text: "", font: "Script", color: "White", primer: true },
     },
     "58 mm - Front": {
+        "inverted": false,
         "length": 58.75,
         "leftRadius": 7.125,
         "rightRadius": 7.125,
@@ -144,6 +148,7 @@ const knifeFormFactors = {
         "preset": { text: "", font: "Script", color: "White", primer: true },
     },
     "91 mm - Back": {
+        "inverted": true,
         "length": 91.0,
         "leftRadius": 9.0,
         "rightRadius": 10.0,
@@ -159,12 +164,12 @@ const knifeFormFactors = {
             x: {
                 column: 97,
                 row: 0,
-                constant: -31.5,
+                constant: -43.5,
             },
             y: {
                 column: 0,
                 row: 29.5,
-                constant: -12.5,
+                constant: -14.0,
             }
         },
         "jigRows": 5,
@@ -296,6 +301,7 @@ function generateDocument(textData, formFactor) {
             textFrame.textRange.characterAttributes.textFont = font;
 
             textFrame.contents = textData[i][j].text;
+            if (formFactor.inverted === true) textFrame.rotate(180);
             setTextToFontSize(textFrame, fontName);
             constrainTextWidth(textFrame);
             textFrame.position = getTextPosition(i, j);
@@ -379,7 +385,12 @@ function generateDocument(textData, formFactor) {
 
     function yNudge(textFrame, fontName) {
         const nudgeValue = textFrame.height * (fontData[fontName]["y-nudge"] || 0);
-        textFrame.translate(0, -nudgeValue);
+        if (formFactor.inverted === true) {
+            textFrame.translate(0, nudgeValue);
+        }
+        else {
+            textFrame.translate(0, -nudgeValue);
+        }
     }
 }
 
