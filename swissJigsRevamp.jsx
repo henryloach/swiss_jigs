@@ -273,9 +273,9 @@ function generateDocument(textData, formFactor) {
     view.centerPoint = [document.width / 2, -document.height / 2]; // Center the view on the document
 
     // Colors
-    var whiteSpot = createSpotColor("RDG_WHITE", [25, 25, 25, 25]); // Light gray for white ink visualization (CMYK: 0% Cyan, 0% Magenta, 0% Yellow, 10% Black)
-    var primerSpot = createSpotColor("RDG_PRIMER", [50, 0, 100, 10]); // Greenish primer ink (CMYK: 50% Cyan, 0% Magenta, 100% Yellow, 10% Black)
-    var guideSpot = createSpotColor("Guide", [70, 0, 0, 25]);
+    var whiteSpot = createSpotColor("RDG_WHITE", [25, 25, 25, 25]); 
+    var primerSpot = createSpotColor("RDG_PRIMER", [50, 0, 100, 10]); 
+    var guideSpot = createSpotColor("PerfCutContour", [70, 0, 0, 25]);
     var grey = createCMYKColor(0, 0, 0, 60);
     var black = createCMYKColor(0, 0, 0, 100);
 
