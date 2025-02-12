@@ -5,7 +5,7 @@ const fontData = {
         // "fullName" : "MonotypeCorsiva", // work
         "fullName": "Monotype-Corsiva-Regular", // home
         "sizeFactor": 1,
-        "y-nudge": 0.4 / 8.0,
+        "y-nudge": 0.25 / 8.0,
     },
     "Classic Script": {
         "fullName": "DancingScript-Regular",
