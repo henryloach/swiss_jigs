@@ -278,8 +278,8 @@ function generateDocument(textData, formFactor) {
     view.centerPoint = [document.width / 2, -document.height / 2]; // Center the view on the document
 
     // Colors
-    var whiteSpot = createSpotColor("RDG_WHITE", [25, 25, 25, 25]); 
-    var primerSpot = createSpotColor("RDG_PRIMER", [50, 0, 100, 10]); 
+    var whiteSpot = createSpotColor("RDG_WHITE", [25, 25, 25, 25]);
+    var primerSpot = createSpotColor("RDG_PRIMER", [50, 0, 100, 10]);
     var guideSpot = createSpotColor("PerfCutContour", [70, 0, 0, 25]);
     var grey = createCMYKColor(0, 0, 0, 60);
     var black = createCMYKColor(0, 0, 0, 100);
@@ -317,6 +317,7 @@ function generateDocument(textData, formFactor) {
             }
 
             horizontalGuide(getTextPosition(i, j), formFactor.length)
+            createOutline(getTextPosition(i, j), formFactor.length, formFactor.leftRadius, formFactor.rightRadius)
         }
     }
 
@@ -383,6 +384,28 @@ function generateDocument(textData, formFactor) {
         line.zOrder(ZOrderMethod.SENDTOBACK);
     }
 
+    function createOutline(point, length, radiusLeft, radiusRight) {
+        posX = point[0];
+        posY = point[1];
+        length = mmToPoints(length);
+        radiusLeft = mmToPoints(radiusLeft);
+        radiusRight = mmToPoints(radiusRight);
+    
+        const leftCenter = posX + radiusLeft;
+        const rightCenter = posX + length - radiusRight;
+        const leftArc = createSemiCircle(leftCenter, posY, radiusLeft, "left");
+        const rightArc = createSemiCircle(rightCenter, posY, radiusRight, "right");
+    
+        var outline = activeDocument.pathItems.add();
+        outline.stroked = true;
+        outline.filled = false;
+        outline.strokeWidth = 0.5;
+        outline.strokeColor = guideSpot;
+    
+        outline.setEntirePath(leftArc.concat(rightArc, [[posX + radiusLeft, posY - radiusLeft]]));
+       
+    }
+
     function yNudge(textFrame, fontName) {
         const nudgeValue = textFrame.height * (fontData[fontName]["y-nudge"] || 0);
         if (formFactor.inverted === true) {
@@ -443,3 +466,20 @@ function createCMYKColor(cyan, magenta, yellow, key) {
 function mmToPoints(mm) { return mm * 72 / 25.4; }
 function pointsToMm(pts) { return pts * 25.4 / 72; }
 
+// Shapes
+function createSemiCircle(centerX, centerY, radius, direction) {
+
+    var points = [];
+    var startAngle = direction === "left" ? 180 : 0;
+    var steps = 18; // Number of points to smooth the curve
+
+    for (var i = 0; i <= steps; i++) {
+        var angle = startAngle + (i / steps) * 180;
+        var radians = angle * Math.PI / 180;
+        var x = centerX + Math.sin(radians) * radius;
+        var y = centerY + Math.cos(radians) * radius;
+        points.push([x, y]);
+    }
+
+    return points;
+}
