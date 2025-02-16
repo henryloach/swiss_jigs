@@ -60,6 +60,7 @@ const knifeFormFactors = {
                 constant: -12.5,
             }
         },
+        "textOffset": 57.2,
         "jigRows": 5,
         "jigColumns": 2,
         "preset": { text: "", font: "Script", color: "White", primer: false },
@@ -89,13 +90,14 @@ const knifeFormFactors = {
                 constant: -12.2333,
             }
         },
+        "textOffset": 53.9,
         "jigRows": 5,
         "jigColumns": 2,
         "preset": { text: "", font: "Script", color: "White", primer: false },
     },
-    "64 mm - Front ": {
+    "65 mm - Front ": {
         "inverted": false,
-        "length": 64.15,
+        "length": 65,
         "leftRadius": 8.075,
         "rightRadius": 8.075,
         "fontSize": 7,
@@ -115,6 +117,7 @@ const knifeFormFactors = {
                 constant: -8.38,
             }
         },
+        "textOffset": 41.4,
         "jigRows": 7,
         "jigColumns": 2,
         "preset": { text: "", font: "Script", color: "White", primer: true },
@@ -143,6 +146,7 @@ const knifeFormFactors = {
                 constant: -8.54,
             }
         },
+        "textOffset": 37.9,
         "jigRows": 7,
         "jigColumns": 3,
         "preset": { text: "", font: "Script", color: "White", primer: true },
@@ -172,6 +176,7 @@ const knifeFormFactors = {
                 constant: -14.0,
             }
         },
+        "textOffset": 45.5,
         "jigRows": 5,
         "jigColumns": 2,
         "preset": { text: "", font: "Script", color: "White", primer: false },
@@ -372,8 +377,8 @@ function generateDocument(textData, formFactor) {
     function horizontalGuide(point, length) {
         const x = point[0];
         const y = point[1];
-        const startPoint = [x - mmToPoints(length) / 2, y];
-        const endPoint = [x + mmToPoints(length) / 2, y];
+        const startPoint = [x - mmToPoints(formFactor.textOffset), y];
+        const endPoint = [startPoint[0] + mmToPoints(length), y];
         const line = document.pathItems.add();
         line.setEntirePath([startPoint, endPoint]);
 
@@ -387,6 +392,7 @@ function generateDocument(textData, formFactor) {
     function createOutline(point, length, radiusLeft, radiusRight) {
         posX = point[0];
         posY = point[1];
+        posX = posX - mmToPoints(formFactor.textOffset)
         length = mmToPoints(length);
         radiusLeft = mmToPoints(radiusLeft);
         radiusRight = mmToPoints(radiusRight);
