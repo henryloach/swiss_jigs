@@ -48,19 +48,18 @@ const knifeFormFactors = {
             "Spartan",
             "Climber",
         ],
-        "coefficients": {
-            x: {
-                column: 97,
-                row: 0,
-                constant: -31.5,
+        "coordinates": {
+            "text" : {
+                "bottomLeft": [65.5, 135],
+                "bottomRight": [162.5, 135],
+                "topRight": [162.5, 17]
             },
-            y: {
-                column: 0,
-                row: 29.5,
-                constant: -12.5,
+            "outline" : {
+                "bottomLeft": [8.3, 135],
+                "bottomRight": [105.3, 135],
+                "topRight": [105.3, 17]
             }
         },
-        "textOffset": 57.2,
         "jigRows": 5,
         "jigColumns": 2,
         "preset": { text: "", font: "Script", color: "White", primer: false },
@@ -78,19 +77,18 @@ const knifeFormFactors = {
             "Waiter",
             "My First Victorinox",
         ],
-        "coefficients": {
-            x: {
-                column: 100,
-                row: -0.13333,
-                constant: -38.2333,
+        "coordinates": {
+            "text" : {
+                "bottomLeft": [61.1, 135.7],
+                "bottomRight": [161.1, 135.8],
+                "topRight": [161.634, 17.533]
             },
-            y: {
-                column: 0.1,
-                row: 29.5667,
-                constant: -12.2333,
+            "outline" : {
+                "bottomLeft": [7.2, 135.7],
+                "bottomRight": [107.2, 135.8],
+                "topRight": [107.734, 17.533]
             }
         },
-        "textOffset": 53.9,
         "jigRows": 5,
         "jigColumns": 2,
         "preset": { text: "", font: "Script", color: "White", primer: false },
@@ -105,19 +103,18 @@ const knifeFormFactors = {
         "knives": [
             "Nail Clip",
         ],
-        "coefficients": {
-            x: {
-                column: 73.4,
-                row: -0.12,
-                constant: -26.06,
+        "coordinates": {
+            "text" : {
+                "bottomLeft": [46.5, 139.5],
+                "bottomRight": [119.6, 139.5],
+                "topRight": [120.62, 12.76]
             },
-            y: {
-                column: 0,
-                row: 21.14,
-                constant: -8.38,
+            "outline" : {
+                "bottomLeft": [5.1, 139.5],
+                "bottomRight": [78.2, 139.5],
+                "topRight": [79.22, 12.76]
             }
         },
-        "textOffset": 41.4,
         "jigRows": 7,
         "jigColumns": 2,
         "preset": { text: "", font: "Script", color: "White", primer: true },
@@ -134,19 +131,18 @@ const knifeFormFactors = {
             "Escort",
             "Mini Champ",
         ],
-        "coefficients": {
-            x: {
-                column: 66.3,
-                row: -0.08,
-                constant: -22.94,
+        "coordinates": {
+            "text" : {
+                "bottomLeft": [42.8, 139.4],
+                "bottomRight": [175.4, 139.6],
+                "topRight": [175.88, 12.88]
             },
-            y: {
-                column: 0.1,
-                row: 21.12,
-                constant: -8.54,
-            }
+            "outline" : {
+                "bottomLeft": [4.9, 139.4],
+                "bottomRight": [137.5, 139.6],
+                "topRight": [137.98, 12.88]
+            },
         },
-        "textOffset": 37.9,
         "jigRows": 7,
         "jigColumns": 3,
         "preset": { text: "", font: "Script", color: "White", primer: true },
@@ -157,26 +153,25 @@ const knifeFormFactors = {
         "leftRadius": 9.0,
         "rightRadius": 10.0,
         "fontSize": 8.0,
-        "maxTextWidth": 44,
+        "maxTextWidth": 64,
         "knives": [
             "Huntsman",
             "Fieldmaster",
             "Spartan",
             "Climber",
         ],
-        "coefficients": {
-            x: {
-                column: 97,
-                row: 0,
-                constant: -43.5,
+        "coordinates": {
+            "text" : {
+                "bottomLeft": [53.5, 133.5],
+                "bottomRight": [150.5, 133.5],
+                "topRight": [150.5, 15.5]
             },
-            y: {
-                column: 0,
-                row: 29.5,
-                constant: -14.0,
+            "outline" : {
+                "bottomLeft": [8.3, 135],
+                "bottomRight": [105.3, 135],
+                "topRight": [105.3, 17]
             }
         },
-        "textOffset": 45.5,
         "jigRows": 5,
         "jigColumns": 2,
         "preset": { text: "", font: "Script", color: "White", primer: false },
@@ -305,11 +300,14 @@ function generateDocument(textData, formFactor) {
             var font = app.textFonts.getByName(fontData[fontName].fullName);
             textFrame.textRange.characterAttributes.textFont = font;
 
+            var textCoefficients = calculateCoefficients(formFactor, formFactor.coordinates.text)
+            var outlineCoefficients = calculateCoefficients(formFactor, formFactor.coordinates.outline)
+
             textFrame.contents = textData[i][j].text;
             if (formFactor.inverted === true) textFrame.rotate(180);
             setTextToFontSize(textFrame, fontName);
             constrainTextWidth(textFrame);
-            textFrame.position = getTextPosition(i, j);
+            textFrame.position = getPosition(i, j, textCoefficients);
             positionTextCenter(textFrame);
             yNudge(textFrame, fontName);
 
@@ -321,8 +319,9 @@ function generateDocument(textData, formFactor) {
                 textFrame.zOrder(ZOrderMethod.BRINGTOFRONT);
             }
 
-            horizontalGuide(getTextPosition(i, j), formFactor.length)
-            createOutline(getTextPosition(i, j), formFactor.length, formFactor.leftRadius, formFactor.rightRadius)
+            horizontalGuide(getPosition(i, j, textCoefficients), getPosition(i, j, outlineCoefficients), formFactor.length)
+            createOutline(getPosition(i, j, outlineCoefficients), formFactor.length, formFactor.leftRadius, formFactor.rightRadius)
+
         }
     }
 
@@ -352,9 +351,9 @@ function generateDocument(textData, formFactor) {
         textFrame.width = textFrame.height * aspectRatio;
     }
 
-    function getTextPosition(i, j) {
-        const x = formFactor.coefficients.x.row * (i + 1) + formFactor.coefficients.x.column * (j + 1) + formFactor.coefficients.x.constant
-        const y = formFactor.coefficients.y.row * (i + 1) + formFactor.coefficients.y.column * (j + 1) + formFactor.coefficients.y.constant
+    function getPosition(i, j, coefficients) {
+        const x = coefficients.x.row * (i + 1) + coefficients.x.column * (j + 1) + coefficients.x.constant
+        const y = coefficients.y.row * (i + 1) + coefficients.y.column * (j + 1) + coefficients.y.constant
         return [mmToPoints(x), -mmToPoints(y)]
     }
 
@@ -374,10 +373,10 @@ function generateDocument(textData, formFactor) {
         }
     }
 
-    function horizontalGuide(point, length) {
-        const x = point[0];
-        const y = point[1];
-        const startPoint = [x - mmToPoints(formFactor.textOffset), y];
+    function horizontalGuide(textPoint, guidePoint, length) {
+        const x = guidePoint[0];
+        const y = textPoint[1];
+        const startPoint = [x, y];
         const endPoint = [startPoint[0] + mmToPoints(length), y];
         const line = document.pathItems.add();
         line.setEntirePath([startPoint, endPoint]);
@@ -392,24 +391,23 @@ function generateDocument(textData, formFactor) {
     function createOutline(point, length, radiusLeft, radiusRight) {
         posX = point[0];
         posY = point[1];
-        posX = posX - mmToPoints(formFactor.textOffset)
         length = mmToPoints(length);
         radiusLeft = mmToPoints(radiusLeft);
         radiusRight = mmToPoints(radiusRight);
-    
+
         const leftCenter = posX + radiusLeft;
         const rightCenter = posX + length - radiusRight;
         const leftArc = createSemiCircle(leftCenter, posY, radiusLeft, "left");
         const rightArc = createSemiCircle(rightCenter, posY, radiusRight, "right");
-    
+
         var outline = activeDocument.pathItems.add();
         outline.stroked = true;
         outline.filled = false;
         outline.strokeWidth = 0.5;
         outline.strokeColor = guideSpot;
-    
+
         outline.setEntirePath(leftArc.concat(rightArc, [[posX + radiusLeft, posY - radiusLeft]]));
-       
+
     }
 
     function yNudge(textFrame, fontName) {
@@ -488,4 +486,54 @@ function createSemiCircle(centerX, centerY, radius, direction) {
     }
 
     return points;
+}
+
+function solveLinearSystem(A, B) {
+    function det(a, b, c, d) { return a * d - b * c; }
+
+    var a = A[0][0], b = A[0][1], c = A[0][2];
+    var d = A[1][0], e = A[1][1], f = A[1][2];
+    var g = A[2][0], h = A[2][1], i = A[2][2];
+
+    var x1 = B[0], x2 = B[1], x3 = B[2];
+
+    var D = a * det(e, f, h, i) - b * det(d, f, g, i) + c * det(d, e, g, h);
+    if (D === 0) throw new Error("Matrix inversion failed: determinant is zero");
+
+    var Dx = x1 * det(e, f, h, i) - b * det(x2, f, x3, i) + c * det(x2, e, x3, h);
+    var Dy = a * det(x2, f, x3, i) - x1 * det(d, f, g, i) + c * det(d, x2, g, x3);
+    var Dz = a * det(e, x2, h, x3) - b * det(d, x2, g, x3) + x1 * det(d, e, g, h);
+
+    return [Dx / D, Dy / D, Dz / D];
+}
+
+function calculateCoefficients(formFactor, coordinates) {
+    const x1 = coordinates.bottomLeft[0]; // Bottom Left
+    const y1 = coordinates.bottomLeft[1]; // Bottom Left
+    const x2 = coordinates.bottomRight[0]; // Bottom Right
+    const y2 = coordinates.bottomRight[1]; // Bottom Right
+    const x3 = coordinates.topRight[0]; // Top Right
+    const y3 = coordinates.topRight[1]; // Top Right
+    // Define known row/column indices for the given points (growing top to bottom, left to right)
+    const row1 = formFactor.jigRows, col1 = 1; // Bottom Left
+    const row2 = formFactor.jigRows, col2 = formFactor.jigColumns; // Bottom Right
+    const row3 = 1, col3 = formFactor.jigColumns // Top Right 
+
+    // Solve for X coefficients
+    var matrixX = [
+        [row1, col1, 1],
+        [row2, col2, 1],
+        [row3, col3, 1]
+    ];
+    const valuesX = [x1, x2, x3];
+    const xCoeffs = solveLinearSystem(matrixX, valuesX);
+
+    // Solve for Y coefficients
+    const valuesY = [y1, y2, y3];
+    const yCoeffs = solveLinearSystem(matrixX, valuesY);
+
+    return {
+        x: { row: xCoeffs[0], column: xCoeffs[1], constant: xCoeffs[2] },
+        y: { row: yCoeffs[0], column: yCoeffs[1], constant: yCoeffs[2] }
+    };
 }
