@@ -152,8 +152,8 @@ const knifeFormFactors = {
         "length": 91.0,
         "leftRadius": 9.0,
         "rightRadius": 10.0,
-        "fontSize": 8.0,
-        "maxTextWidth": 64,
+        "fontSize": 7.7,
+        "maxTextWidth": 50,
         "knives": [
             "Huntsman",
             "Fieldmaster",

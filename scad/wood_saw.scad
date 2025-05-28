@@ -1,5 +1,5 @@
 module knife_shape() {
-    import("knife_profile.svg");
+    import("../resources/wood_saw_profile.svg");
 }
 
 jig_width = 148.25;
