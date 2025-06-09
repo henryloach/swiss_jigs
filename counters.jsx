@@ -33,32 +33,32 @@ const fontData = {
 }
 
 const jigData = {
-    "Big" : {
+    "Big": {
         "fontSize": 8,
-        "numRows" : 3,
+        "numRows": 3,
         "numColumns": 4,
         "radius": 45,
         "bottomLeft": [27.0, 123.8],
         "bottomRight": [173.8, 124.0],
-        "topRight" : [173.6, 28.2]
+        "topRight": [173.6, 28.2]
     },
-        "Medium" : {
+    "Medium": {
         "fontSize": 7,
-        "numRows" : 3,
+        "numRows": 3,
         "numColumns": 5,
         "radius": 35,
         "bottomLeft": [22.07, 123.7],
         "bottomRight": [178.6, 124.0],
-        "topRight" : [178.5, 28.2]
+        "topRight": [178.5, 28.2]
     },
-        "Small" : {
+    "Small": {
         "fontSize": 6,
-        "numRows" : 5,
+        "numRows": 5,
         "numColumns": 7,
         "radius": 25,
         "bottomLeft": [16.1, 133.2],
         "bottomRight": [184.0, 134.0],
-        "topRight" : [184.0, 18.8]
+        "topRight": [184.0, 18.8]
     },
 
 }
@@ -178,26 +178,22 @@ function generateDocument() {
 
     for (row = 0; row < activeJig.numRows; row++) {
         for (column = 0; column < activeJig.numColumns; column++) {
-            var rowAmt = 1 - row / (activeJig.numColumns - 1) 
+            var rowAmt = 1 - row / (activeJig.numRows - 1)
             var columnAmt = column / (activeJig.numColumns - 1)
             var x = activeJig.bottomLeft[0] + lerp(0, activeJig.bottomRight[0] - activeJig.bottomLeft[0], columnAmt)
                 + lerp(0, activeJig.topRight[0] - activeJig.bottomRight[0], rowAmt)
             var y = activeJig.bottomLeft[1] + lerp(0, activeJig.bottomRight[1] - activeJig.bottomLeft[1], columnAmt)
                 + lerp(0, activeJig.topRight[1] - activeJig.bottomRight[1], rowAmt)
-            var textFrame = document.textFrames.add()
+
 
             var fontName = jobData.font
             var font = app.textFonts.getByName(fontData[fontName].fullName)
-            textFrame.textRange.characterAttributes.textFont = font
+
+            ///
 
             var radiusPt = mmToPoints(activeJig.radius)
             var xPt = mmToPoints(x)
             var yPt = -mmToPoints(y) // Illustrator y-axis goes downward
-
-            textFrame.contents = jobData.text
-            setTextToFontSize(textFrame, fontName)
-            textFrame.position = [xPt, yPt]
-            positionTextCenter(textFrame)
 
             var circle = document.pathItems.ellipse(
                 yPt + radiusPt / 2, // top coordinate
@@ -206,10 +202,45 @@ function generateDocument() {
                 radiusPt            // height
             )
 
-            circle.filled = false;
-            circle.stroked = true;
-            circle.strokeWidth = 0.5;
-            circle.strokeColor = guideSpot; // Or use grey, whiteSpot, etc.
+            circle.filled = false
+            circle.stroked = true
+            circle.strokeWidth = 0.5
+            circle.strokeColor = guideSpot // Or use grey, whiteSpot, etc.
+
+            ///
+
+            // var textFrame = document.textFrames.add()
+            // textFrame.textRange.characterAttributes.textFont = font
+            // textFrame.contents = jobData.text
+            // setTextToFontSize(textFrame, fontName)
+            // textFrame.position = [xPt, yPt]
+            // positionTextCenter(textFrame)
+
+            ///
+
+            var innerRadius = radiusPt - mmToPoints(12) // Margin inside the circle
+
+            // Draw inner path for type-on-path
+            var innerCircle = document.pathItems.ellipse(
+                yPt + innerRadius / 2, // top
+                xPt - innerRadius / 2, // left
+                innerRadius,
+                innerRadius
+            )
+
+            innerCircle.stroked = false
+            innerCircle.filled = false
+
+            // Add text on the path
+            var pathText = document.textFrames.pathText(innerCircle)
+            pathText.contents = jobData.text
+
+            // Font and style
+            var fontName = jobData.font
+            var font = app.textFonts.getByName(fontData[fontName].fullName)
+            pathText.textRange.characterAttributes.textFont = font
+            pathText.textRange.characterAttributes.size = mmToPoints(jigData[jobData.size].fontSize) * fontData[fontName].sizeFactor
+
         }
     }
 
