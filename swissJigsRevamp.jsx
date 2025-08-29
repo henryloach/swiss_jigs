@@ -62,7 +62,7 @@ const knifeFormFactors = {
         },
         "jigRows": 5,
         "jigColumns": 2,
-        "preset": { text: "", font: "Script", color: "White", primer: false },
+        "preset": { text: "", font: "Script", color: "White", primer: true },
     },
     "84 mm - Front": {
         "inverted": false,
@@ -79,19 +79,19 @@ const knifeFormFactors = {
         ],
         "coordinates": {
             "text" : {
-                "bottomLeft": [61.1, 135.7],
-                "bottomRight": [161.1, 135.8],
+                "bottomLeft": [61.1, 136.0],
+                "bottomRight": [161.1, 136.3],
                 "topRight": [161.634, 17.533]
             },
             "outline" : {
-                "bottomLeft": [7.2, 135.7],
-                "bottomRight": [107.2, 135.8],
+                "bottomLeft": [7.2, 136.0],
+                "bottomRight": [107.2, 136.3],
                 "topRight": [107.734, 17.533]
             }
         },
         "jigRows": 5,
         "jigColumns": 2,
-        "preset": { text: "", font: "Script", color: "White", primer: false },
+        "preset": { text: "", font: "Script", color: "White", primer: true },
     },
     "65 mm - Front ": {
         "inverted": false,
@@ -153,7 +153,7 @@ const knifeFormFactors = {
         "leftRadius": 9.0,
         "rightRadius": 10.0,
         "fontSize": 7.7,
-        "maxTextWidth": 50,
+        "maxTextWidth": 54,
         "knives": [
             "Huntsman",
             "Fieldmaster",
@@ -174,7 +174,7 @@ const knifeFormFactors = {
         },
         "jigRows": 5,
         "jigColumns": 2,
-        "preset": { text: "", font: "Script", color: "White", primer: false },
+        "preset": { text: "", font: "Script", color: "White", primer: true },
     },
 }
 
