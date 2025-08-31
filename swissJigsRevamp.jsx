@@ -537,3 +537,4 @@ function calculateCoefficients(formFactor, coordinates) {
         y: { row: yCoeffs[0], column: yCoeffs[1], constant: yCoeffs[2] }
     };
 }
+// end of file
