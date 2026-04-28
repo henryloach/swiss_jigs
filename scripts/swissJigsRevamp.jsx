@@ -209,6 +209,8 @@ function generateDocument(textData, formFactor) {
     if (baseFish) {
         baseFish.remove()
     }
+
+    app.activeDocument.selection = null
     
     // Functions
 
