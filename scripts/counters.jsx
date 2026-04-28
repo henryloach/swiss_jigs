@@ -32,7 +32,7 @@ const fontData = {
     }
 }
 
-const jigData = {
+const counterData = {
     "Big": {
         "fontSize": 8,
         "numRows": 3,
@@ -174,7 +174,7 @@ function generateDocument() {
 
     // Text
 
-    const activeJig = jigData[jobData.size]
+    const activeJig = counterData[jobData.size]
 
     var diceBlackFile = new File("C:\\Users\\Roland\\Desktop\\Dice_Black.ai")
     var diceWhiteFile = new File("C:\\Users\\Roland\\Desktop\\Dice_White.ai")
@@ -275,7 +275,7 @@ function generateDocument() {
                 var fontName = jobData.font
                 var font = app.textFonts.getByName(fontData[fontName].fullName)
                 pathText.textRange.characterAttributes.textFont = font
-                pathText.textRange.characterAttributes.size = mmToPoints(jigData[jobData.size].fontSize) * fontData[fontName].sizeFactor
+                pathText.textRange.characterAttributes.size = mmToPoints(counterData[jobData.size].fontSize) * fontData[fontName].sizeFactor
 
                 // Colour
                 var primerText = pathText.duplicate()
@@ -326,7 +326,7 @@ function generateDocument() {
 
     function setTextToFontSize(textFrame, fontName) {
         const aspectRatio = textFrame.width / textFrame.height
-        textFrame.height = mmToPoints(jigData.Big.fontSize) * fontData[fontName].sizeFactor
+        textFrame.height = mmToPoints(counterData.Big.fontSize) * fontData[fontName].sizeFactor
         textFrame.width = textFrame.height * aspectRatio
     }
 
