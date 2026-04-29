@@ -127,8 +127,8 @@ function generateDocument(textData, formFactor) {
     }
 
     // Load Crest File
-    var crestFile = new File("C:\\Users\\Roland\\Desktop\\Victorinox_Logo.ai")
-    var fishFile = new File("C:\\Users\\Roland\\Desktop\\Fisherman_Fish.ai")
+    var crestFile = new File("C:\\Users\\Roland\\Documents\\swiss_jigs\\assets\\Victorinox_Logo.ai")
+    var fishFile = new File("C:\\Users\\Roland\\Documents\\swiss_jigs\\assets\\Fisherman_Fish.ai")
 
     var baseCrest = null
     var baseFish = null

@@ -176,9 +176,9 @@ function generateDocument() {
 
     const activeJig = counterData[jobData.size]
 
-    var diceBlackFile = new File("C:\\Users\\Roland\\Desktop\\Dice_Black.ai")
-    var diceWhiteFile = new File("C:\\Users\\Roland\\Desktop\\Dice_White.ai")
-    var dicePrimerFile = new File("C:\\Users\\Roland\\Desktop\\Dice_Primer.ai")
+    var diceBlackFile = new File("C:\\Users\\Roland\\Documents\\swiss_jigs\\assets\\Dice_Black.ai")
+    var diceWhiteFile = new File("C:\\Users\\Roland\\Documents\\swiss_jigs\\assets\\Dice_White.ai")
+    var dicePrimerFile = new File("C:\\Users\\Roland\\Documents\\swiss_jigs\\assets\\Dice_Primer.ai")
 
     var baseDiceBlack = document.placedItems.add()
     baseDiceBlack.file = diceBlackFile
