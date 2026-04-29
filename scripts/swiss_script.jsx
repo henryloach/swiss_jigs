@@ -51,7 +51,7 @@ function makeTextInputWindow(formFactor) {
 
                 var colorGroup = knifeData.add("group");
                 colorGroup.orientation = "column";
-                colorGroup.add("statictext", undefined, "Color:");
+                colorGroup.add("statictext", undefined, "Text Colour:");
                 var color = colorGroup.add("dropdownlist", undefined, ["White", "Grey", "Black", "Deep Black"]);
                 color.selection = data[i][j].color;
                 color.onChange = function () {
