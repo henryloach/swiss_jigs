@@ -1,6 +1,6 @@
 const fontData = {
     "Script": {
-        "fullName" : "MonotypeCorsiva", // work
+        "fullName": "MonotypeCorsiva", // work
         // "fullName": "Monotype-Corsiva-Regular", // home
         "sizeFactor": 1,
         "y-nudge": 0.25 / 8.0,
@@ -69,7 +69,6 @@ var jobData = {
     size: "Big",
     text: "debug",
     color: "White",
-    // style: "Wrap",
     font: "Script"
 }
 
@@ -92,16 +91,6 @@ counterColorOptions.selection = "White"
 counterColorOptions.onChange = function () {
     jobData.color = counterColorOptions.selection.text
 }
-
-// text options
-// var counterTextOptionsGroup = textInputWindow.add("group")
-// counterTextOptionsGroup.orientation = "column"
-// counterTextOptionsGroup.add("statictext", undefined, "Counter Text Style")
-// var counterTextOptions = counterTextOptionsGroup.add("dropdownlist", undefined, ["Wrap", "Straight"])
-// counterTextOptions.selection = "Wrap"
-// counterTextOptions.onChange = function () {
-//     jobData.style = counterTextOptions.selection.text
-// }
 
 // font
 var fontOptionsGroup = textInputWindow.add("group")
@@ -218,86 +207,58 @@ function generateDocument() {
             circle.strokeWidth = 0.5
             circle.strokeColor = guideSpot // Or use grey, whiteSpot, etc.
 
-            ///
-		
-	    // if ( jobData.style === "Straight" ) {
+            var innerRadius = radiusPt - mmToPoints(12) // Margin inside the circle
 
-        //         var textFrame = document.textFrames.add()
-        //         textFrame.textRange.characterAttributes.textFont = font
-        //         textFrame.contents = jobData.text
-        //         setTextToFontSize(textFrame, fontName)
-        //         textFrame.position = [xPt, yPt]
-        //         positionTextCenter(textFrame)
+            // Draw inner path for type-on-path
+            var innerCircle = document.pathItems.ellipse(
+                yPt + innerRadius / 2, // top
+                xPt - innerRadius / 2, // left
+                innerRadius,
+                innerRadius
+            )
 
-        //         // Colour
-        //         var primerText = textFrame.duplicate()
-        //         primerText.textRange.characterAttributes.fillColor = primerSpot
-        //         textFrame.zOrder(ZOrderMethod.BRINGTOFRONT)
+            innerCircle.stroked = false
+            innerCircle.filled = false
 
-        //         if (jobData.color === 'White')  { // Colour of counters :S
-        //             textFrame.textRange.characterAttributes.fillColor = black
-        //         } else if (jobData.color === 'Black') {
-        //             textFrame.textRange.characterAttributes.fillColor = whiteSpot
-        //         } else if (jobData.color === '50/50') {
-        //             if ((column * activeJig.numColumns + row) % 2 == 0) {
-        //                 textFrame.textRange.characterAttributes.fillColor = black
-        //             } else {
-        //                 textFrame.textRange.characterAttributes.fillColor = whiteSpot
-        //             }
-        //         } else {
-        //             alert('unreachable')
-        //         }
+            // Add text on the path
+            var pathText = document.textFrames.pathText(innerCircle)
+            pathText.contents = jobData.text
 
-	    // }
+            // Font and style
+            var fontName = jobData.font
+            var font = app.textFonts.getByName(fontData[fontName].fullName)
+            pathText.textRange.characterAttributes.textFont = font
+            pathText.textRange.characterAttributes.size = mmToPoints(counterData[jobData.size].fontSize) * fontData[fontName].sizeFactor
 
-            ///
+            // Rotate to top
+            var textLength = pathText.width
+            var radius = innerRadius; // already in points
 
-	    // else if ( jobData.style === "Wrap" ) {
+            var angleRadians = textWidth / radius;
+            var angleDegrees = angleRadians * (180 / Math.PI);
 
-                var innerRadius = radiusPt - mmToPoints(12) // Margin inside the circle
+            var startAngle = -90 - (angleDegrees / 2);
+            pathText.rotate(startAngle, true, true, true, true, Transformation.CENTER);
 
-                // Draw inner path for type-on-path
-                var innerCircle = document.pathItems.ellipse(
-                    yPt + innerRadius / 2, // top
-                    xPt - innerRadius / 2, // left
-                    innerRadius,
-                    innerRadius
-                )
+            // Generate Primer Underlay
+            var primerText = pathText.duplicate()
+            primerText.textRange.characterAttributes.fillColor = primerSpot
+            pathText.zOrder(ZOrderMethod.BRINGTOFRONT)
 
-                innerCircle.stroked = false
-                innerCircle.filled = false
-
-                // Add text on the path
-                var pathText = document.textFrames.pathText(innerCircle)
-                pathText.contents = jobData.text
-
-                // Font and style
-                var fontName = jobData.font
-                var font = app.textFonts.getByName(fontData[fontName].fullName)
-                pathText.textRange.characterAttributes.textFont = font
-                pathText.textRange.characterAttributes.size = mmToPoints(counterData[jobData.size].fontSize) * fontData[fontName].sizeFactor
-
-                // Colour
-                var primerText = pathText.duplicate()
-                primerText.textRange.characterAttributes.fillColor = primerSpot
-                pathText.zOrder(ZOrderMethod.BRINGTOFRONT)
-
-                if (jobData.color === 'White')  { // Colour of counters :S
+            // Colour
+            if (jobData.color === 'White') { // Colour of counters :S
+                pathText.textRange.characterAttributes.fillColor = black
+            } else if (jobData.color === 'Black') {
+                pathText.textRange.characterAttributes.fillColor = whiteSpot
+            } else if (jobData.color === '50/50') {
+                if ((column * activeJig.numColumns + row) % 2 == 0) {
                     pathText.textRange.characterAttributes.fillColor = black
-                } else if (jobData.color === 'Black') {
-                    pathText.textRange.characterAttributes.fillColor = whiteSpot
-                } else if (jobData.color === '50/50') {
-                    if ((column * activeJig.numColumns + row) % 2 == 0) {
-                        pathText.textRange.characterAttributes.fillColor = black
-                    } else {
-                        pathText.textRange.characterAttributes.fillColor = whiteSpot
-                    }
                 } else {
-                    alert('unreachable')
+                    pathText.textRange.characterAttributes.fillColor = whiteSpot
                 }
-
-            // }
-
+            } else {
+                alert('unreachable')
+            }
         }
     }
 
@@ -336,15 +297,6 @@ function generateDocument() {
             textFrame.position[1] + textFrame.height / 2
         ]
     }
-
-    // function constrainTextWidth(textFrame) {
-    //     const aspectRatio = textFrame.width / textFrame.height
-
-    //     if (textFrame.width > mmToPoints(formFactor.maxTextWidth)) {
-    //         textFrame.width = mmToPoints(formFactor.maxTextWidth)
-    //         textFrame.height = textFrame.width / aspectRatio
-    //     }
-    // }
 
     function createCMYKColor(cyan, magenta, yellow, key) {
         var newCMYKColor = new CMYKColor()
